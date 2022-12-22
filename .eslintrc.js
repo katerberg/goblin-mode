@@ -45,7 +45,6 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'no-await-in-loop': 'error',
     'no-console': 'error',
-    'no-extra-parens': 'error',
     'no-shadow': 'error',
     'no-template-curly-in-string': 'error',
     'class-methods-use-this': ['error', {exceptMethods: ['render']}],

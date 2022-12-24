@@ -3,7 +3,7 @@ export class Tile {
 
   public y;
 
-  private backgroundColor;
+  public backgroundColor;
 
   constructor(x: number, y: number) {
     this.x = x;
@@ -14,10 +14,9 @@ export class Tile {
 
   setBackgroundColor(color: string): void {
     this.backgroundColor = color;
-    this.draw();
   }
 
   draw(): void {
-    globalThis.display.draw(this.x, this.y, `${this.x},${this.y}`, null, this.backgroundColor);
+    globalThis.display.draw(this.x, this.y, '', null, this.backgroundColor);
   }
 }

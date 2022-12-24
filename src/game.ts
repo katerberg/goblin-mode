@@ -36,7 +36,7 @@ export class Game {
 
     this.getStartGate().setBackgroundColor('tomato');
     this.getEndGate().setBackgroundColor('rebeccapurple');
-    this.sheep = [new Sheep(this.startGatePosition.x, this.startGatePosition.y)];
+    this.sheep = [new Sheep(this.startGatePosition.x, this.startGatePosition.y, this)];
     this.scheduler = new ROT.Scheduler.Speed();
     this.sheep.forEach((sheep) => this.scheduler.add(sheep, true));
     this.init();
@@ -44,6 +44,10 @@ export class Game {
 
   private getRandomXCoordinate(): number {
     return Math.floor(Math.random() * (this.tiles[this.tiles.length - 1].length - 1));
+  }
+
+  private getTile(x: number, y: number): Tile | undefined {
+    return this.tiles?.[x]?.[y];
   }
 
   getStartGate(): Tile {
@@ -54,14 +58,37 @@ export class Game {
     return this.tiles[this.endGatePosition.x][this.endGatePosition.y];
   }
 
+  getTileColor(x: number, y: number): string {
+    return this.getTile(x, y)?.backgroundColor || '#fff';
+  }
+
+  isValidSpace(x: number, y: number): boolean {
+    return !!this.getTile(x, y);
+  }
+
+  redrawTile(x: number, y: number): void {
+    this.getTile(x, y)?.draw();
+  }
+
+  winGame(): void {
+    this.scheduler.clear();
+    // eslint-disable-next-line no-console
+    console.log('you win');
+  }
+
   async nextTurn(): Promise<boolean> {
     const actor = this.scheduler.next() as Actor;
     if (!actor) {
       return false;
     }
+    let resolve: () => void;
+    const promise = new Promise((promiseResolve) => {
+      resolve = promiseResolve as () => void;
+    });
+    setTimeout(() => resolve(), 1000);
+    await promise;
     await actor.act();
-    return false;
-    // return true;
+    return true;
   }
 
   async init(): Promise<void> {

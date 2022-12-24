@@ -1,9 +1,9 @@
 export class Tile {
-  public x;
+  public x: number;
 
-  public y;
+  public y: number;
 
-  public backgroundColor;
+  public backgroundColor: string;
 
   constructor(x: number, y: number) {
     this.x = x;

@@ -25,19 +25,28 @@ export class Game {
 
   constructor(width: number, height: number) {
     this.tiles = [];
-    for (let w = 0; w < width; w++) {
-      this.tiles[w] = [];
-      for (let h = 0; h < height; h++) {
-        this.tiles[w][h] = new Tile(w, h);
+    const map = new ROT.Map.Uniform(width + 2, height + 2, {roomDugPercentage: 1});
+    const mapCallback = (x: number, y: number, contents: number): void => {
+      if (x === 0 || x === width + 1 || y === 0 || y === height + 1) {
+        return;
       }
-    }
-    this.startGatePosition = {
-      x: this.getRandomXCoordinate(),
-      y: this.tiles.length - 1,
+      const tileX = x - 1;
+      const tileY = y - 1;
+      if (!this.tiles[tileX]) {
+        this.tiles[tileX] = [];
+      }
+      this.tiles[tileX][tileY] = new Tile(tileX, tileY, contents === 0);
     };
+    map.create(mapCallback.bind(this));
+    const startTile = this.getRandomTile(this.tiles[0].length - 1, false);
+    this.startGatePosition = {
+      x: startTile.x,
+      y: startTile.y,
+    };
+    const endTile = this.getRandomTile(0, true);
     this.endGatePosition = {
-      x: this.getRandomXCoordinate(),
-      y: 0,
+      x: endTile.x,
+      y: endTile.y,
     };
 
     this.getStartGate().setBackgroundColor('tomato');
@@ -56,8 +65,15 @@ export class Game {
     this.init();
   }
 
-  private getRandomXCoordinate(): number {
-    return Math.floor(Math.random() * (this.tiles[this.tiles.length - 1].length - 1));
+  private getRandomTile(startRow: number, increasing: boolean): Tile {
+    let tile: Tile | undefined = undefined;
+    for (let rowNumber = startRow; !tile; rowNumber += increasing ? 1 : -1) {
+      const filteredColumns = this.tiles.filter((column) => column[rowNumber].isPassable);
+      if (filteredColumns.length) {
+        tile = filteredColumns[Math.floor(Math.random() * filteredColumns.length)][rowNumber];
+      }
+    }
+    return tile;
   }
 
   private getTile(x: number, y: number): Tile | undefined {

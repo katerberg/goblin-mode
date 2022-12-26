@@ -3,12 +3,15 @@ export class Tile {
 
   public y: number;
 
+  public isPassable: boolean;
+
   public backgroundColor: string;
 
-  constructor(x: number, y: number) {
+  constructor(x: number, y: number, isPassable: boolean) {
     this.x = x;
     this.y = y;
-    this.backgroundColor = ['#fff', '#dfdfdf', '#ccc'][(x % 2) + ((y % 2) % 2)];
+    this.isPassable = isPassable;
+    this.backgroundColor = isPassable ? '#dfdfdf' : '#ccc';
     this.draw();
   }
 

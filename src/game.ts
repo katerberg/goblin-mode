@@ -93,7 +93,7 @@ export class Game {
   }
 
   isValidTile(x: number, y: number): boolean {
-    return !!this.getTile(x, y);
+    return !!this.getTile(x, y)?.isPassable;
   }
 
   isTileEmpty(x: number, y: number): boolean {

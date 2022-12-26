@@ -10,3 +10,12 @@ export function filterInPlace<Type>(array: Array<Type>, fn: (arg0: Type) => bool
   }
   array.length = to;
 }
+
+export function waitFor(ms: number): Promise<void> {
+  let resolve: () => void;
+  const promise = new Promise((promiseResolve) => {
+    resolve = promiseResolve as () => void;
+  }) as Promise<void>;
+  setTimeout(() => resolve(), ms);
+  return promise;
+}

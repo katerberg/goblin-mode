@@ -1,6 +1,7 @@
 import * as ROT from 'rot-js';
 import Speed from 'rot-js/lib/scheduler/speed';
 import {Sheep} from './actors/sheep';
+import {setTextOnId} from './domManipulation';
 import {Actor} from './interfaces/actor';
 import {Tile} from './tile';
 import {filterInPlace, waitFor} from './utils';
@@ -92,6 +93,8 @@ export class Game {
     this.sheepArrived.push(sheepAtGate);
     filterInPlace(this.sheepActive, (sheep) => sheepAtGate !== sheep);
     this.scheduler.remove(sheepAtGate);
+    setTextOnId('active', `${this.sheepActive.length}`);
+    setTextOnId('safe', `${this.sheepArrived.length}`);
     if (this.sheepActive.length === 0) {
       this.handleLevelEnd();
     }
@@ -108,6 +111,7 @@ export class Game {
     const sheep = this.sheepQueued.pop();
     if (sheep) {
       this.sheepActive.push(sheep);
+      setTextOnId('active', `${this.sheepActive.length}`);
       this.scheduler.add(sheep, true);
     }
   }

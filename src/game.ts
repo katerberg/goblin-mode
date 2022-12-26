@@ -1,23 +1,11 @@
 import * as ROT from 'rot-js';
 import Speed from 'rot-js/lib/scheduler/speed';
+import {Sheep} from './actors/sheep';
 import {Actor} from './interfaces/actor';
-import {Sheep} from './sheep';
 import {Tile} from './tile';
+import {filterInPlace} from './utils';
 
 type Position = {x: number; y: number};
-
-function filterInPlace<Type>(array: Array<Type>, fn: (arg0: Type) => boolean): void {
-  let from = 0,
-    to = 0;
-  while (from < array.length) {
-    if (fn(array[from])) {
-      array[to] = array[from];
-      to++;
-    }
-    from++;
-  }
-  array.length = to;
-}
 
 export class Game {
   private startGatePosition: Position;
@@ -89,12 +77,17 @@ export class Game {
   handleSheepAtGate(sheepAtGate: Sheep): void {
     this.sheepArrived.push(sheepAtGate);
     filterInPlace(this.sheep, (sheep) => sheepAtGate !== sheep);
+    this.scheduler.remove(sheepAtGate);
+    if (this.sheep.length === 0) {
+      this.handleLevelEnd();
+    }
   }
 
-  winGame(): void {
-    this.scheduler.clear();
-    // eslint-disable-next-line no-console
-    console.log('you win');
+  private handleLevelEnd(): void {
+    if (this.sheepArrived.length !== 0) {
+      // eslint-disable-next-line no-console
+      console.log('you win');
+    }
   }
 
   async nextTurn(): Promise<boolean> {
@@ -120,6 +113,8 @@ export class Game {
       // eslint-disable-next-line no-await-in-loop
       const good = await this.nextTurn();
       if (!good) {
+        // eslint-disable-next-line no-console
+        console.debug('breaking due to no actors');
         break;
       }
     }

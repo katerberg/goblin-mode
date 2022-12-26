@@ -1,6 +1,6 @@
 import {Path, SpeedActor} from 'rot-js';
-import {Game} from './game';
-import {Actor} from './interfaces/actor';
+import {Game} from '../game';
+import {Actor} from '../interfaces/actor';
 
 export class Sheep implements SpeedActor, Actor {
   public x: number;
@@ -45,7 +45,6 @@ export class Sheep implements SpeedActor, Actor {
       const endGate = this.game.getEndGate();
       if (this.x === endGate.x && this.y === endGate.y) {
         this.game.handleSheepAtGate(this);
-        this.game.winGame();
       }
     }
   }

@@ -19,7 +19,7 @@ export class Sheep implements SpeedActor, Actor {
   }
 
   get path(): number[][] {
-    const aStarCallback = (x: number, y: number): boolean => this.game.isValidSpace(x, y);
+    const aStarCallback = (x: number, y: number): boolean => this.game.isValidTile(x, y);
     const endGate = this.game.getEndGate();
     const aStar = new Path.AStar(endGate.x, endGate.y, aStarCallback, {topology: 8});
     const path: number[][] = [];

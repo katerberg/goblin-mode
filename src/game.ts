@@ -41,7 +41,13 @@ export class Game {
 
     this.getStartGate().setBackgroundColor('tomato');
     this.getEndGate().setBackgroundColor('rebeccapurple');
-    this.sheepQueued = [new Sheep(this.startGatePosition.x, this.startGatePosition.y, this)];
+    this.sheepQueued = [
+      new Sheep(this.startGatePosition.x, this.startGatePosition.y, this),
+      new Sheep(this.startGatePosition.x, this.startGatePosition.y, this),
+      new Sheep(this.startGatePosition.x, this.startGatePosition.y, this),
+      new Sheep(this.startGatePosition.x, this.startGatePosition.y, this),
+      new Sheep(this.startGatePosition.x, this.startGatePosition.y, this),
+    ];
     this.sheepActive = [new Sheep(this.startGatePosition.x, this.startGatePosition.y, this)];
     this.sheepArrived = [];
     this.scheduler = new ROT.Scheduler.Speed();
@@ -69,8 +75,12 @@ export class Game {
     return this.getTile(x, y)?.backgroundColor || '#fff';
   }
 
-  isValidSpace(x: number, y: number): boolean {
+  isValidTile(x: number, y: number): boolean {
     return !!this.getTile(x, y);
+  }
+
+  isTileEmpty(x: number, y: number): boolean {
+    return this.sheepActive.findIndex((sheep) => sheep.x === x && sheep.y === y) === -1;
   }
 
   redrawTile(x: number, y: number): void {
@@ -78,6 +88,7 @@ export class Game {
   }
 
   handleSheepAtGate(sheepAtGate: Sheep): void {
+    this.redrawTile(sheepAtGate.x, sheepAtGate.y);
     this.sheepArrived.push(sheepAtGate);
     filterInPlace(this.sheepActive, (sheep) => sheepAtGate !== sheep);
     this.scheduler.remove(sheepAtGate);
@@ -93,12 +104,26 @@ export class Game {
     }
   }
 
+  private spawnSheep(): void {
+    const sheep = this.sheepQueued.pop();
+    if (sheep) {
+      this.sheepActive.push(sheep);
+      this.scheduler.add(sheep, true);
+    }
+  }
+
   async nextTurn(): Promise<boolean> {
     const actor = this.scheduler.next() as Actor;
     if (!actor) {
       return false;
     }
-    await waitFor(100);
+    const startGate = this.getStartGate();
+    if (this.sheepQueued.length !== 0 && this.isTileEmpty(startGate.x, startGate.y)) {
+      this.spawnSheep();
+    }
+    if (this.sheepActive.length && actor === this.sheepActive[0]) {
+      await waitFor(100);
+    }
     await actor.act();
     return true;
   }

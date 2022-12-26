@@ -20,6 +20,7 @@
     "socket.io-client": "^4.5.4"
   },
   "devDependencies": {
+    "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^5.47.0",
     "@typescript-eslint/parser": "^5.47.0",
     "@webpack-cli/generators": "^3.0.1",

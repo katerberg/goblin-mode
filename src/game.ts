@@ -6,6 +6,19 @@ import {Tile} from './tile';
 
 type Position = {x: number; y: number};
 
+function filterInPlace<Type>(array: Array<Type>, fn: (arg0: Type) => boolean): void {
+  let from = 0,
+    to = 0;
+  while (from < array.length) {
+    if (fn(array[from])) {
+      array[to] = array[from];
+      to++;
+    }
+    from++;
+  }
+  array.length = to;
+}
+
 export class Game {
   private startGatePosition: Position;
 
@@ -14,6 +27,8 @@ export class Game {
   private scheduler: Speed;
 
   private sheep: Sheep[];
+
+  private sheepArrived: Sheep[];
 
   private tiles: Tile[][];
 
@@ -37,6 +52,7 @@ export class Game {
     this.getStartGate().setBackgroundColor('tomato');
     this.getEndGate().setBackgroundColor('rebeccapurple');
     this.sheep = [new Sheep(this.startGatePosition.x, this.startGatePosition.y, this)];
+    this.sheepArrived = [];
     this.scheduler = new ROT.Scheduler.Speed();
     this.sheep.forEach((sheep) => this.scheduler.add(sheep, true));
     this.init();
@@ -70,6 +86,11 @@ export class Game {
     this.getTile(x, y)?.draw();
   }
 
+  handleSheepAtGate(sheepAtGate: Sheep): void {
+    this.sheepArrived.push(sheepAtGate);
+    filterInPlace(this.sheep, (sheep) => sheepAtGate !== sheep);
+  }
+
   winGame(): void {
     this.scheduler.clear();
     // eslint-disable-next-line no-console
@@ -85,7 +106,7 @@ export class Game {
     const promise = new Promise((promiseResolve) => {
       resolve = promiseResolve as () => void;
     });
-    setTimeout(() => resolve(), 1000);
+    setTimeout(() => resolve(), 100);
     await promise;
     await actor.act();
     return true;

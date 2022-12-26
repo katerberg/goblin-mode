@@ -44,6 +44,7 @@ export class Sheep implements SpeedActor, Actor {
 
       const endGate = this.game.getEndGate();
       if (this.x === endGate.x && this.y === endGate.y) {
+        this.game.handleSheepAtGate(this);
         this.game.winGame();
       }
     }

@@ -47,7 +47,6 @@ export class Game {
     this.redrawTile(endGate.x, endGate.y);
     globalThis.gameElement.ontouchstart = this.handleTouchStart.bind(this);
     globalThis.gameElement.onmousedown = this.handleMouseDown.bind(this);
-    globalThis.gameElement.ontouchmove = this.handleTouchMove.bind(this);
   }
 
   isTileEmpty(x: number, y: number): boolean {
@@ -63,10 +62,6 @@ export class Game {
   handleTouchStart(event: TouchEvent): void {
     event.preventDefault();
     this.handleSelect(...globalThis.display.eventToPosition(event));
-  }
-
-  handleTouchMove(event: TouchEvent): void {
-    event.preventDefault();
   }
 
   handleMouseDown(event: MouseEvent): void {

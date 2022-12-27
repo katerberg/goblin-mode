@@ -1,15 +1,16 @@
+#game {
+  max-width: 500px;
+}
+
 canvas {
   /* Set up proportionate scaling */
   width: 100%;
   height: auto;
-
-  /* Set up positioning */
-  position: fixed;
-  left: 0;
 }
 
 h1 {
   font-size: 4rem;
+  margin-bottom: 1rem;
 }
 
 div {

@@ -1,5 +1,6 @@
 import {Path, SpeedActor} from 'rot-js';
 import {Game} from '../game';
+import {GameMap} from '../gameMap';
 import {Actor} from '../interfaces/actor';
 
 export class Sheep implements SpeedActor, Actor {
@@ -11,16 +12,19 @@ export class Sheep implements SpeedActor, Actor {
 
   private game: Game;
 
-  constructor(x: number, y: number, game: Game) {
+  private map: GameMap;
+
+  constructor(x: number, y: number, game: Game, map: GameMap) {
     this.x = x;
     this.y = y;
     this.speed = 1;
     this.game = game;
+    this.map = map;
   }
 
   get path(): number[][] {
-    const aStarCallback = (x: number, y: number): boolean => this.game.isValidTile(x, y);
-    const endGate = this.game.getEndGate();
+    const aStarCallback = (x: number, y: number): boolean => this.map.isValidTile(x, y);
+    const endGate = this.map.getEndGate();
     const aStar = new Path.AStar(endGate.x, endGate.y, aStarCallback, {topology: 8});
     const path: number[][] = [];
     const pathCallback = (x: number, y: number): void => {
@@ -36,13 +40,13 @@ export class Sheep implements SpeedActor, Actor {
     if (path[0]) {
       const [[nextX, nextY]] = path;
 
-      this.game.redrawTile(this.x, this.y);
+      this.map.redrawTile(this.x, this.y);
       this.x = nextX;
       this.y = nextY;
 
-      this.draw(this.game.getTileColor(this.x, this.y));
+      this.draw(this.map.getTileColor(this.x, this.y));
 
-      const endGate = this.game.getEndGate();
+      const endGate = this.map.getEndGate();
       if (this.x === endGate.x && this.y === endGate.y) {
         this.game.handleSheepAtGate(this);
       }

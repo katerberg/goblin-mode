@@ -1,6 +1,7 @@
 import * as ROT from 'rot-js';
 import Speed from 'rot-js/lib/scheduler/speed';
 import {Sheep} from './actors/sheep';
+import {times} from './constants';
 import {setTextOnId} from './domManipulation';
 import {GameMap} from './gameMap';
 import {Actor} from './interfaces/actor';
@@ -78,7 +79,7 @@ export class Game {
       this.spawnSheep();
     }
     if (this.sheepActive.length && actor === this.sheepActive[0]) {
-      await waitFor(100);
+      await waitFor(times.TURN_DELAY);
     }
     await actor.act();
     return true;

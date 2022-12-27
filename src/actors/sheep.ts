@@ -1,4 +1,5 @@
 import {Path, SpeedActor} from 'rot-js';
+import {symbols} from '../constants';
 import {Game} from '../game';
 import {GameMap} from '../gameMap';
 import {Actor} from '../interfaces/actor';
@@ -58,6 +59,6 @@ export class Sheep implements SpeedActor, Actor {
   }
 
   draw(bgColor: string): void {
-    globalThis.display.draw(this.x, this.y, '웃', null, bgColor);
+    globalThis.display.draw(this.x, this.y, symbols.SHEEP, null, bgColor);
   }
 }

@@ -1,3 +1,5 @@
+import {symbols} from './constants';
+
 export class Tile {
   public x: number;
 
@@ -20,6 +22,6 @@ export class Tile {
   }
 
   draw(): void {
-    globalThis.display.draw(this.x, this.y, '', null, this.backgroundColor);
+    globalThis.display.draw(this.x, this.y, this.isPassable ? symbols.SPACE_OPEN : '', null, this.backgroundColor);
   }
 }

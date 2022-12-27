@@ -5,6 +5,7 @@
 html,
 body {
   overscroll-behavior-y: contain;
+  position: relative;
 }
 
 canvas {

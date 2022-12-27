@@ -97,8 +97,11 @@ export class Game {
   }
 
   private setFlag(x: number, y: number): void {
+    const previousX = this.flag.x;
+    const previousY = this.flag.y;
     this.flag = {x, y};
     this.redrawTile(x, y);
+    this.redrawTile(previousX, previousY);
 
     const goalz = (sheep: Sheep): void => {
       sheep.setGoal(x, y);

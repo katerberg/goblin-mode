@@ -2,6 +2,11 @@
   max-width: 500px;
 }
 
+html,
+body {
+  overscroll-behavior-y: contain;
+}
+
 canvas {
   /* Set up proportionate scaling */
   width: 100%;

@@ -1,12 +1,11 @@
 import {Map} from 'rot-js';
+import {Position} from './interfaces/position';
 import {Tile} from './tile';
 
-type Position = {x: number; y: number};
-
 export class GameMap {
-  public startGatePosition: Position;
+  private startGatePosition: Position;
 
-  public endGatePosition: Position;
+  private endGatePosition: Position;
 
   private tiles: Tile[][];
 
@@ -45,19 +44,22 @@ export class GameMap {
     return this.tiles[this.endGatePosition.x][this.endGatePosition.y];
   }
 
-  drawTiles(): void {
-    this.tiles.forEach((tileRow) => tileRow.forEach((tile) => tile.draw()));
+  matchesGate(x: number, y: number): boolean {
+    return (
+      (this.startGatePosition.x === x && this.startGatePosition.y === y) ||
+      (this.endGatePosition.x === x && this.endGatePosition.y === y)
+    );
   }
 
-  redrawTile(x: number, y: number): void {
-    this.getTile(x, y)?.draw();
+  drawTiles(): void {
+    this.tiles.forEach((tileRow) => tileRow.forEach((tile) => tile.draw()));
   }
 
   getTileColor(x: number, y: number): string {
     return this.getTile(x, y)?.backgroundColor || '#fff';
   }
 
-  isValidTile(x: number, y: number): boolean {
+  isPassableTile(x: number, y: number): boolean {
     return !!this.getTile(x, y)?.isPassable;
   }
 

@@ -1,7 +1,9 @@
 export const symbols = {
+  FLAG: '⚑',
+  GATE: '∩',
+  SHEEP: '웃',
   SPACE_WALL: '█',
   SPACE_OPEN: '.',
-  SHEEP: '웃',
 };
 
 export const times = {

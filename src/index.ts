@@ -12,6 +12,7 @@ window.addEventListener('load', () => {
   if (container) {
     const gameElement = document.getElementById('game');
     if (gameElement) {
+      globalThis.gameElement = gameElement;
       gameElement.appendChild(container);
       gameElement.onwheel = (event): void => {
         event.preventDefault();

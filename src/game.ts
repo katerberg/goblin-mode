@@ -60,6 +60,7 @@ export class Game {
   }
 
   handleTouchStart(event: TouchEvent): void {
+    event.preventDefault();
     this.handleSelect(...globalThis.display.eventToPosition(event));
   }
 

@@ -81,6 +81,10 @@ export class Game {
     }
   }
 
+  getSheepPositions(sheep?: Sheep): Position[] {
+    return this.sheepActive.filter((s) => sheep !== s).map((s) => ({x: s.x, y: s.y}));
+  }
+
   isOccupiedTile(x: number, y: number): boolean {
     return this.sheepActive.some((sheep) => sheep.x === x && sheep.y === y);
   }

@@ -11,19 +11,20 @@ export class GameMap {
 
   constructor(width: number, height: number) {
     this.tiles = [];
-    const map = new Map.Uniform(width + 2, height + 2, {roomDugPercentage: 1});
+    const map = new Map.Cellular(width, height);
     const mapCallback = (x: number, y: number, contents: number): void => {
-      if (x === 0 || x === width + 1 || y === 0 || y === height + 1) {
-        return;
-      }
-      const tileX = x - 1;
-      const tileY = y - 1;
+      const tileX = x;
+      const tileY = y;
       if (!this.tiles[tileX]) {
         this.tiles[tileX] = [];
       }
-      this.tiles[tileX][tileY] = new Tile(tileX, tileY, contents === 0);
+      this.tiles[tileX][tileY] = new Tile(tileX, tileY, contents === 1);
     };
-    map.create(mapCallback.bind(this));
+    map.randomize(0.5);
+    Array.from(Array(3).keys()).forEach(() => {
+      map.create(mapCallback.bind(this));
+    });
+    map.connect(mapCallback.bind(this), 1);
     const startTile = this.getRandomTile(this.tiles[0].length - 1, false);
     this.startGatePosition = {
       x: startTile.x,

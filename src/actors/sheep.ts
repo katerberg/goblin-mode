@@ -16,7 +16,7 @@ export class Sheep implements SpeedActor, Actor {
 
   private map: GameMap;
 
-  private goal: Position;
+  private goal: Position[];
 
   constructor(x: number, y: number, game: Game, map: GameMap) {
     this.x = x;
@@ -24,16 +24,17 @@ export class Sheep implements SpeedActor, Actor {
     this.speed = 1;
     this.game = game;
     this.map = map;
-    this.goal = {x, y};
+    this.goal = [{x, y}];
   }
 
   setGoal(x: number, y: number): void {
-    this.goal = {x, y};
+    this.goal = [{x, y}];
   }
 
   get path(): number[][] {
-    const aStarCallback = (x: number, y: number): boolean => this.map.isPassableTile(x, y);
-    const aStar = new Path.AStar(this.goal.x, this.goal.y, aStarCallback, {topology: 8});
+    const aStarCallback = (x: number, y: number): boolean =>
+      (x === this.x && y === this.y) || (this.map.isPassableTile(x, y) && !this.game.isOccupiedTile(x, y));
+    const aStar = new Path.AStar(this.goal[0].x, this.goal[0].y, aStarCallback, {topology: 8});
     const path: number[][] = [];
     const pathCallback = (x: number, y: number): void => {
       path.push([x, y]);

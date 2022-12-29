@@ -50,29 +50,11 @@ export class Game {
 
     this.flag = {x: startGate.x, y: startGate.y};
 
-    this.sheepQueued = [
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-      new Sheep(startGate.x, startGate.y, this, this.map),
-    ];
+    this.sheepQueued = [];
+
+    Array.from(Array(20).keys()).forEach(() => {
+      this.sheepQueued.push(new Sheep(startGate.x, startGate.y, this, this.map));
+    });
     this.sheepActive = [new Sheep(startGate.x, startGate.y, this, this.map)];
     this.sheepArrived = [];
     this.scheduler = new Scheduler.Speed();

@@ -4,6 +4,7 @@ import {Actor} from '../definitions/actor';
 import {Position} from '../definitions/position';
 import {Game} from '../game';
 import {GameMap} from '../gameMap';
+import {getGoblinName} from '../utils';
 import {Character} from './character';
 
 export class Sheep extends Character implements SpeedActor, Actor {
@@ -15,8 +16,11 @@ export class Sheep extends Character implements SpeedActor, Actor {
 
   private goal: Position;
 
+  public name: string;
+
   constructor(x: number, y: number, game: Game, map: GameMap) {
     super({x, y});
+    this.name = getGoblinName();
     this.speed = 1;
     this.game = game;
     this.map = map;

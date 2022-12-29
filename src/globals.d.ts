@@ -8,4 +8,6 @@ declare global {
 
   var width: number;
   var height: number;
+
+  var goblinNames: string[];
 }

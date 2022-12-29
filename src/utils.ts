@@ -25,3 +25,25 @@ export function waitFor(ms: number): Promise<void> {
 export function isNextTo(position1: Position, position2: Position): boolean {
   return Math.abs(position1.x - position2.x) < 2 && Math.abs(position1.y - position2.y) < 2;
 }
+
+function shuffle<T>(array: T[]): T[] {
+  let currentIndex = array.length;
+  let randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex !== 0) {
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
+}
+
+export function getGoblinName(): string {
+  globalThis.goblinNames = shuffle(globalThis.goblinNames);
+  return globalThis.goblinNames.pop() || '';
+}

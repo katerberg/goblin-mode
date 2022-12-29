@@ -3,6 +3,7 @@ import Speed from 'rot-js/lib/scheduler/speed';
 import {Enemy} from './actors/enemy';
 import {Sheep} from './actors/sheep';
 import {symbols, times} from './constants';
+import {Controls} from './controls';
 import {Actor} from './definitions/actor';
 import {Position} from './definitions/position';
 import {setTextOnId} from './domManipulation';
@@ -20,11 +21,14 @@ export class Game {
 
   private enemies: Enemy[];
 
+  private controls: Controls;
+
   private map: GameMap;
 
   private flag: Position;
 
   constructor(width: number, height: number) {
+    this.controls = new Controls(this);
     this.map = new GameMap(width, height);
     const startGate = this.map.getStartGate();
     const endGate = this.map.getEndGate();
@@ -61,8 +65,6 @@ export class Game {
     endGate.setBackgroundColor('rebeccapurple');
     this.redrawTile(this.enemies[0].x, this.enemies[0].y);
     this.redrawTile(endGate.x, endGate.y);
-    globalThis.gameElement.ontouchstart = this.handleTouchStart.bind(this);
-    globalThis.gameElement.onmousedown = this.handleMouseDown.bind(this);
   }
 
   isTileFreeOfSheep(x: number, y: number): boolean {
@@ -73,15 +75,6 @@ export class Game {
     if (this.map.isNonWallTile(x, y)) {
       this.setFlag(x, y);
     }
-  }
-
-  handleTouchStart(event: TouchEvent): void {
-    event.preventDefault();
-    this.handleSelect(...globalThis.display.eventToPosition(event));
-  }
-
-  handleMouseDown(event: MouseEvent): void {
-    this.handleSelect(...globalThis.display.eventToPosition(event));
   }
 
   handleSheepAtGate(sheepAtGate: Sheep): void {

@@ -14,7 +14,7 @@ export class GameMap {
     const map = new Map.Cellular(width, height);
     const mapCallback = (x: number, y: number, contents: number): void => {
       const tileX = x;
-      const tileY = y;
+      const tileY = y + 1;
       if (!this.tiles[tileX]) {
         this.tiles[tileX] = [];
       }
@@ -25,12 +25,12 @@ export class GameMap {
       map.create(mapCallback.bind(this));
     });
     map.connect(mapCallback.bind(this), 1);
-    const startTile = this.getRandomTile(this.tiles[0].length - 1, false);
+    const startTile = this.getRandomTile(this.tiles[1].length - 1, false);
     this.startGatePosition = {
       x: startTile.x,
       y: startTile.y,
     };
-    const endTile = this.getRandomTile(0, true);
+    const endTile = this.getRandomTile(1, true);
     this.endGatePosition = {
       x: endTile.x,
       y: endTile.y,

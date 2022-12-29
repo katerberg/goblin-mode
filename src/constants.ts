@@ -4,7 +4,7 @@ export const symbols = {
   GATE: '∩',
   SHEEP: '웃',
   SPACE_WALL: '█',
-  SPACE_OPEN: '.',
+  SPACE_OPEN: ' ',
 };
 
 export const board = {

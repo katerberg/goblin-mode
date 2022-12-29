@@ -4,7 +4,7 @@ import {Actor} from '../definitions/actor';
 import {Position} from '../definitions/position';
 import {Game} from '../game';
 import {GameMap} from '../gameMap';
-import {getGoblinName, getRandomColor, getRandomGreen} from '../utils';
+import {getGoblinName, getRandomGreen} from '../utils';
 import {Character} from './character';
 
 export class Sheep extends Character implements SpeedActor, Actor {
@@ -24,7 +24,6 @@ export class Sheep extends Character implements SpeedActor, Actor {
     super({x, y});
     this.name = getGoblinName();
     this.color = getRandomGreen();
-    console.log(this.color);
     this.speed = 1;
     this.game = game;
     this.map = map;

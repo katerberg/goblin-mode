@@ -1,11 +1,12 @@
 import {Scheduler} from 'rot-js';
 import Speed from 'rot-js/lib/scheduler/speed';
+import {Enemy} from './actors/enemy';
 import {Sheep} from './actors/sheep';
 import {symbols, times} from './constants';
+import {Actor} from './definitions/actor';
+import {Position} from './definitions/position';
 import {setTextOnId} from './domManipulation';
 import {GameMap} from './gameMap';
-import {Actor} from './interfaces/actor';
-import {Position} from './interfaces/position';
 import {filterInPlace, waitFor} from './utils';
 
 export class Game {
@@ -16,6 +17,8 @@ export class Game {
   private sheepActive: Sheep[];
 
   private sheepArrived: Sheep[];
+
+  private enemies: Enemy[];
 
   private map: GameMap;
 
@@ -39,22 +42,35 @@ export class Game {
     this.sheepArrived = [];
     this.scheduler = new Scheduler.Speed();
     this.sheepActive.forEach((sheep) => this.scheduler.add(sheep, true));
+    let enemyLocation: Position | undefined;
+    let enemyLocationIndex = 1;
+    while (!enemyLocation) {
+      if (this.map.isNonWallTile(endGate.x, endGate.y + enemyLocationIndex)) {
+        enemyLocation = {y: endGate.y + enemyLocationIndex, x: endGate.x};
+      } else if (++enemyLocationIndex > height) {
+        throw new Error('no valid location');
+      }
+    }
+    this.map.getEndGate();
+    this.enemies = [new Enemy(enemyLocation, this)];
+    this.enemies.forEach((enemy) => this.scheduler.add(enemy, true));
 
     this.init();
 
     startGate.setBackgroundColor('tomato');
     endGate.setBackgroundColor('rebeccapurple');
+    this.redrawTile(this.enemies[0].x, this.enemies[0].y);
     this.redrawTile(endGate.x, endGate.y);
     globalThis.gameElement.ontouchstart = this.handleTouchStart.bind(this);
     globalThis.gameElement.onmousedown = this.handleMouseDown.bind(this);
   }
 
-  isTileEmpty(x: number, y: number): boolean {
+  isTileFreeOfSheep(x: number, y: number): boolean {
     return this.sheepActive.findIndex((sheep) => sheep.x === x && sheep.y === y) === -1;
   }
 
   handleSelect(x: number, y: number): void {
-    if (this.map.isPassableTile(x, y)) {
+    if (this.map.isNonWallTile(x, y)) {
       this.setFlag(x, y);
     }
   }
@@ -75,8 +91,8 @@ export class Game {
     this.scheduler.remove(sheepAtGate);
     setTextOnId('active', `${this.sheepActive.length}`);
     setTextOnId('safe', `${this.sheepArrived.length}`);
+    this.redrawTile(this.map.getEndGate().x, this.map.getEndGate().y);
     if (this.sheepActive.length === 0) {
-      this.redrawTile(this.map.getEndGate().x, this.map.getEndGate().y);
       this.handleLevelEnd();
     }
   }
@@ -86,13 +102,18 @@ export class Game {
   }
 
   isOccupiedTile(x: number, y: number): boolean {
-    return this.sheepActive.some((sheep) => sheep.x === x && sheep.y === y);
+    return (
+      this.sheepActive.some((sheep) => sheep.isOccupying({x, y})) ||
+      this.enemies.some((enemy) => enemy.isOccupying({x, y}))
+    );
   }
 
   redrawTile(x: number, y: number): void {
     let symbol = symbols.SPACE_OPEN;
-    if (this.sheepActive.some((sheep) => sheep.x === x && sheep.y === y)) {
+    if (this.sheepActive.some((sheep) => sheep.isOccupying({x, y}))) {
       symbol = symbols.SHEEP;
+    } else if (this.enemies.some((enemy) => enemy.isOccupying({x, y}))) {
+      symbol = symbols.ENEMY;
     } else if (this.flag.x === x && this.flag.y === y) {
       symbol = symbols.FLAG;
     } else if (this.map.matchesGate(x, y)) {
@@ -117,6 +138,7 @@ export class Game {
 
   private handleLevelEnd(): void {
     if (this.sheepArrived.length !== 0) {
+      this.scheduler.clear();
       // eslint-disable-next-line no-console
       console.debug('you win');
     }
@@ -137,7 +159,7 @@ export class Game {
       return false;
     }
     const startGate = this.map.getStartGate();
-    if (this.sheepQueued.length !== 0 && this.isTileEmpty(startGate.x, startGate.y)) {
+    if (this.sheepQueued.length !== 0 && this.isTileFreeOfSheep(startGate.x, startGate.y)) {
       this.spawnSheep();
     }
     if (this.sheepActive.length && actor === this.sheepActive[0]) {

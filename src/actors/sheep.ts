@@ -1,15 +1,12 @@
 import {Path, SpeedActor} from 'rot-js';
 import {symbols} from '../constants';
+import {Actor} from '../definitions/actor';
+import {Position} from '../definitions/position';
 import {Game} from '../game';
 import {GameMap} from '../gameMap';
-import {Actor} from '../interfaces/actor';
-import {Position} from '../interfaces/position';
+import {Character} from './character';
 
-export class Sheep implements SpeedActor, Actor {
-  public x: number;
-
-  public y: number;
-
+export class Sheep extends Character implements SpeedActor, Actor {
   private speed: number;
 
   private game: Game;
@@ -19,8 +16,7 @@ export class Sheep implements SpeedActor, Actor {
   private goal: Position;
 
   constructor(x: number, y: number, game: Game, map: GameMap) {
-    this.x = x;
-    this.y = y;
+    super({x, y});
     this.speed = 1;
     this.game = game;
     this.map = map;
@@ -87,6 +83,6 @@ export class Sheep implements SpeedActor, Actor {
   }
 
   private aStarCallback(x: number, y: number): boolean {
-    return (x === this.x && y === this.y) || (this.map.isPassableTile(x, y) && !this.game.isOccupiedTile(x, y));
+    return (x === this.x && y === this.y) || (this.map.isNonWallTile(x, y) && !this.game.isOccupiedTile(x, y));
   }
 }

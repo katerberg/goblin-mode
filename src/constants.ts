@@ -1,4 +1,5 @@
 export const symbols = {
+  ENEMY: '⚔',
   FLAG: '⚑',
   GATE: '∩',
   SHEEP: '웃',
@@ -7,5 +8,5 @@ export const symbols = {
 };
 
 export const times = {
-  TURN_DELAY: 1000,
+  TURN_DELAY: 100,
 };

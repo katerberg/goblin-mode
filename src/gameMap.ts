@@ -1,5 +1,5 @@
 import {Map} from 'rot-js';
-import {Position} from './interfaces/position';
+import {Position} from './definitions/position';
 import {Tile} from './tile';
 
 export class GameMap {
@@ -60,7 +60,7 @@ export class GameMap {
     return this.getTile(x, y)?.backgroundColor || '#fff';
   }
 
-  isPassableTile(x: number, y: number): boolean {
+  isNonWallTile(x: number, y: number): boolean {
     return !!this.getTile(x, y)?.isPassable;
   }
 

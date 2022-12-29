@@ -16,29 +16,31 @@ export class Controls {
     this.movedTouchCell = null;
 
     globalThis.gameElement.ontouchstart = this.handleTouchStart.bind(this);
-    globalThis.gameElement.onmousedown = this.handleMouseDown.bind(this);
     globalThis.gameElement.ontouchcancel = this.handleTouchCancel.bind(this);
     globalThis.gameElement.ontouchmove = this.handleTouchMove.bind(this);
     globalThis.gameElement.ontouchend = this.handleTouchEnd.bind(this);
-    globalThis.gameElement.onmouseup = this.handleMouseUp.bind(this);
     const characterListButton = document.getElementById('character-list-button');
     if (characterListButton) {
-      characterListButton.onclick = toggleCharacterListVisibility;
-      characterListButton.ontouchstart = toggleCharacterListVisibility;
+      characterListButton.ontouchstart = this.handleCharacterListOpen.bind(this);
     }
     const characterListCancel = document.getElementById('character-list-cancel-button');
     if (characterListCancel) {
-      characterListCancel.onclick = toggleCharacterListVisibility;
-      characterListCancel.ontouchstart = toggleCharacterListVisibility;
+      characterListCancel.ontouchstart = this.handleCharacterListClose.bind(this);
     }
+  }
+
+  private handleCharacterListOpen(): void {
+    this.game.pauseTimer();
+    toggleCharacterListVisibility(this.game.sheep);
+  }
+
+  private handleCharacterListClose(): void {
+    toggleCharacterListVisibility(this.game.sheep);
+    this.game.unpauseTimer();
   }
 
   private handleTouchStart(event: TouchEvent): void {
     event.preventDefault();
-    this.startingTouchCell = getPosition(event);
-  }
-
-  private handleMouseDown(event: MouseEvent): void {
     this.startingTouchCell = getPosition(event);
   }
 
@@ -64,17 +66,6 @@ export class Controls {
     }
     this.startingTouchCell = null;
     this.movedTouchCell = null;
-  }
-
-  private handleMouseUp(event: MouseEvent): void {
-    if (!this.startingTouchCell) {
-      return;
-    }
-    const position = getPosition(event);
-    if (this.matchesStartingPosition(position)) {
-      this.game.handleSelect(position.x, position.y);
-    }
-    this.startingTouchCell = null;
   }
 
   private matchesStartingPosition(position: Position): boolean {

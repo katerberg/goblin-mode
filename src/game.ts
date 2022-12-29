@@ -1,6 +1,7 @@
 import {Scheduler} from 'rot-js';
 import Speed from 'rot-js/lib/scheduler/speed';
 import {Enemy} from './actors/enemy';
+import {Pause} from './actors/pause';
 import {Sheep} from './actors/sheep';
 import {symbols, times} from './constants';
 import {Controls} from './controls';
@@ -99,6 +100,10 @@ export class Game {
     // globalThis.display.drawText(0, globalThis.height - 3, 'Active: 1 Safe: 0');
   }
 
+  public get sheep(): Sheep[] {
+    return [...this.sheepActive, ...this.sheepQueued];
+  }
+
   isTileFreeOfSheep(x: number, y: number): boolean {
     return this.sheepActive.findIndex((sheep) => sheep.x === x && sheep.y === y) === -1;
   }
@@ -143,6 +148,16 @@ export class Game {
       symbol = symbols.GATE;
     }
     globalThis.display.draw(x, y, symbol, '#000', this.map.getTileColor(x, y));
+  }
+
+  pauseTimer(): void {
+    this.scheduler.add(new Pause(), false, 0);
+  }
+
+  unpauseTimer(): void {
+    if (this.scheduler._current?.resolve) {
+      this.scheduler._current.resolve();
+    }
   }
 
   private setFlag(x: number, y: number): void {

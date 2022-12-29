@@ -1,6 +1,16 @@
 #game {
   max-width: 500px;
 }
+button {
+  width: 36px;
+  height: 36px;
+}
+
+#character-list-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 
 #character-list-modal {
   background-color: white;
@@ -18,12 +28,11 @@
 
   .title {
     display: inline-block;
-    font-size: 2rem;
+    font-size: 36px;
   }
 
   button.cancel {
-    margin-right: 1rem;
-    margin-top: 1rem;
+    float: right;
   }
   img.sheep-head {
     width: 8%;

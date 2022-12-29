@@ -4,7 +4,7 @@ import {Actor} from '../definitions/actor';
 import {Position} from '../definitions/position';
 import {Game} from '../game';
 import {GameMap} from '../gameMap';
-import {getGoblinName} from '../utils';
+import {getGoblinName, getRandomColor, getRandomGreen} from '../utils';
 import {Character} from './character';
 
 export class Sheep extends Character implements SpeedActor, Actor {
@@ -18,9 +18,13 @@ export class Sheep extends Character implements SpeedActor, Actor {
 
   public name: string;
 
+  private color: string;
+
   constructor(x: number, y: number, game: Game, map: GameMap) {
     super({x, y});
     this.name = getGoblinName();
+    this.color = getRandomGreen();
+    console.log(this.color);
     this.speed = 1;
     this.game = game;
     this.map = map;
@@ -56,7 +60,7 @@ export class Sheep extends Character implements SpeedActor, Actor {
   }
 
   draw(bgColor: string): void {
-    globalThis.display.draw(this.x, this.y, symbols.SHEEP, null, bgColor);
+    globalThis.display.draw(this.x, this.y, symbols.SHEEP, this.color, bgColor);
   }
 
   get path(): number[][] {

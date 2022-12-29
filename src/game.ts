@@ -21,8 +21,8 @@ const drawSomeText = (): void => {
     const previousFg = globalThis.display.getOptions().fg;
     globalThis.display.setOptions({fg: 'orange'});
     const str = 'Goodbye %c{red}cr%b{blue}u%b{}el %c{}world';
-    globalThis.display.drawText(0, 40, str);
-    ctx.fillText(string, leftPad, 680);
+    globalThis.display.drawText(0, 33, str);
+    ctx.fillText(string, leftPad, 33);
     globalThis.display.setOptions({fg: previousFg});
   }
 };

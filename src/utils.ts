@@ -47,3 +47,11 @@ export function getGoblinName(): string {
   globalThis.goblinNames = shuffle(globalThis.goblinNames);
   return globalThis.goblinNames.pop() || '';
 }
+
+export function getRandomGreen(): string {
+  return `rgb(0, ${Math.random() * 130 + 80}, 0)`;
+}
+
+export function getRandomColor(): string {
+  return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+}

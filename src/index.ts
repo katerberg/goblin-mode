@@ -1,14 +1,14 @@
 import './index.scss';
 import * as ROT from 'rot-js';
+import {board} from './constants';
 import {Game} from './game';
 
-const boardWidth = 40;
-const boardHeight = 40;
+const boardWidth = board.width;
+const boardHeight = board.height;
 
-globalThis.width = boardWidth;
-globalThis.height = boardHeight + 4;
+globalThis.height = boardHeight + 3;
 
-globalThis.display = new ROT.Display({width: globalThis.width, height: globalThis.height, fg: '#000', spacing: 2});
+globalThis.display = new ROT.Display({width: board.width, height: globalThis.height, fg: '#000', spacing: 2});
 
 window.addEventListener('load', () => {
   const container = globalThis.display.getContainer() as HTMLCanvasElement;

@@ -6,7 +6,6 @@ declare global {
 
   var gameElement: HTMLElement;
 
-  var width: number;
   var height: number;
 
   var goblinNames: string[];

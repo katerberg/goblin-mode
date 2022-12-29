@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "prebuild": "mkdir -p dist && cp -r src/images/ dist/images/",
     "build": "webpack --config ./webpack.config.js --mode production",
     "start": "concurrently -k 'npm run start:server' 'npm run start:ui'",
     "start:server": "nodemon server.js",
@@ -26,6 +27,7 @@
     "@webpack-cli/generators": "^3.0.1",
     "autoprefixer": "^10.4.13",
     "concurrently": "^7.6.0",
+    "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.3",
     "eslint": "^8.30.0",
     "eslint-config-airbnb-typescript": "^17.0.0",

@@ -6,9 +6,25 @@ import {symbols, times} from './constants';
 import {Controls} from './controls';
 import {Actor} from './definitions/actor';
 import {Position} from './definitions/position';
-import {setTextOnId} from './domManipulation';
 import {GameMap} from './gameMap';
 import {filterInPlace, waitFor} from './utils';
+
+const drawSomeText = (): void => {
+  const ctx = (globalThis.display.getContainer() as HTMLCanvasElement)?.getContext('2d');
+  if (ctx) {
+    ctx.strokeStyle = 'orange';
+    ctx.fillStyle = 'orange';
+    const string = 'This is now a longer message';
+    const leftPad = Math.floor(string.length / 2) * 15;
+
+    const previousFg = globalThis.display.getOptions().fg;
+    globalThis.display.setOptions({fg: 'orange'});
+    const str = 'Goodbye %c{red}cr%b{blue}u%b{}el %c{}world';
+    globalThis.display.drawText(0, 20, str);
+    ctx.fillText(string, leftPad, 680);
+    globalThis.display.setOptions({fg: previousFg});
+  }
+};
 
 export class Game {
   private scheduler: Speed;
@@ -21,14 +37,12 @@ export class Game {
 
   private enemies: Enemy[];
 
-  private controls: Controls;
-
   private map: GameMap;
 
   private flag: Position;
 
   constructor(width: number, height: number) {
-    this.controls = new Controls(this);
+    new Controls(this);
     this.map = new GameMap(width, height);
     const startGate = this.map.getStartGate();
     const endGate = this.map.getEndGate();
@@ -65,6 +79,8 @@ export class Game {
     endGate.setBackgroundColor('rebeccapurple');
     this.redrawTile(this.enemies[0].x, this.enemies[0].y);
     this.redrawTile(endGate.x, endGate.y);
+    // globalThis.display.draw(0, globalThis.height - 3, 'blah blabh Active: 1 Safe: 0', 'null', '#ccc');
+    // globalThis.display.drawText(0, globalThis.height - 3, 'Active: 1 Safe: 0');
   }
 
   isTileFreeOfSheep(x: number, y: number): boolean {
@@ -82,8 +98,6 @@ export class Game {
     this.sheepArrived.push(sheepAtGate);
     filterInPlace(this.sheepActive, (sheep) => sheepAtGate !== sheep);
     this.scheduler.remove(sheepAtGate);
-    setTextOnId('active', `${this.sheepActive.length}`);
-    setTextOnId('safe', `${this.sheepArrived.length}`);
     this.redrawTile(this.map.getEndGate().x, this.map.getEndGate().y);
     if (this.sheepActive.length === 0) {
       this.handleLevelEnd();
@@ -141,7 +155,6 @@ export class Game {
     const sheep = this.sheepQueued.pop();
     if (sheep) {
       this.sheepActive.push(sheep);
-      setTextOnId('active', `${this.sheepActive.length}`);
       this.scheduler.add(sheep, true);
     }
   }
@@ -165,6 +178,7 @@ export class Game {
   async init(): Promise<void> {
     this.map.drawTiles();
     this.sheepActive.forEach((sheep) => sheep.draw(this.map.getTileColor(sheep.x, sheep.y)));
+    drawSomeText();
     // eslint-disable-next-line no-constant-condition
     while (1) {
       // eslint-disable-next-line no-await-in-loop

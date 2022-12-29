@@ -20,7 +20,7 @@ const drawSomeText = (): void => {
     const previousFg = globalThis.display.getOptions().fg;
     globalThis.display.setOptions({fg: 'orange'});
     const str = 'Goodbye %c{red}cr%b{blue}u%b{}el %c{}world';
-    globalThis.display.drawText(0, 20, str);
+    globalThis.display.drawText(0, 40, str);
     ctx.fillText(string, leftPad, 680);
     globalThis.display.setOptions({fg: previousFg});
   }
@@ -50,6 +50,22 @@ export class Game {
     this.flag = {x: startGate.x, y: startGate.y};
 
     this.sheepQueued = [
+      new Sheep(startGate.x, startGate.y, this, this.map),
+      new Sheep(startGate.x, startGate.y, this, this.map),
+      new Sheep(startGate.x, startGate.y, this, this.map),
+      new Sheep(startGate.x, startGate.y, this, this.map),
+      new Sheep(startGate.x, startGate.y, this, this.map),
+      new Sheep(startGate.x, startGate.y, this, this.map),
+      new Sheep(startGate.x, startGate.y, this, this.map),
+      new Sheep(startGate.x, startGate.y, this, this.map),
+      new Sheep(startGate.x, startGate.y, this, this.map),
+      new Sheep(startGate.x, startGate.y, this, this.map),
+      new Sheep(startGate.x, startGate.y, this, this.map),
+      new Sheep(startGate.x, startGate.y, this, this.map),
+      new Sheep(startGate.x, startGate.y, this, this.map),
+      new Sheep(startGate.x, startGate.y, this, this.map),
+      new Sheep(startGate.x, startGate.y, this, this.map),
+      new Sheep(startGate.x, startGate.y, this, this.map),
       new Sheep(startGate.x, startGate.y, this, this.map),
       new Sheep(startGate.x, startGate.y, this, this.map),
       new Sheep(startGate.x, startGate.y, this, this.map),

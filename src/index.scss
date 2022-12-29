@@ -2,6 +2,27 @@
   max-width: 500px;
 }
 
+#character-list {
+  background-color: white;
+  z-index: 100;
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+
+  .title {
+    display: inline-block;
+    font-size: 2rem;
+  }
+
+  button.cancel {
+    margin-right: 1rem;
+    margin-top: 1rem;
+  }
+}
+
 html,
 body {
   overflow: hidden;
@@ -18,8 +39,4 @@ canvas {
   /* Set up proportionate scaling */
   width: 100%;
   height: auto;
-}
-
-span {
-  font-size: 2rem;
 }

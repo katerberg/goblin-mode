@@ -8,5 +8,5 @@ export const symbols = {
 };
 
 export const times = {
-  TURN_DELAY: 100,
+  TURN_DELAY: 200,
 };

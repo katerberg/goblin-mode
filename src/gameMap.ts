@@ -20,8 +20,8 @@ export class GameMap {
       }
       this.tiles[tileX][tileY] = new Tile(tileX, tileY, contents === 1);
     };
-    map.randomize(0.5);
-    Array.from(Array(3).keys()).forEach(() => {
+    map.randomize(0.55);
+    Array.from(Array(5).keys()).forEach(() => {
       map.create(mapCallback.bind(this));
     });
     map.connect(mapCallback.bind(this), 1);

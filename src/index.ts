@@ -2,8 +2,8 @@ import './index.scss';
 import * as ROT from 'rot-js';
 import {Game} from './game';
 
-const boardWidth = 20;
-const boardHeight = 20;
+const boardWidth = 40;
+const boardHeight = 40;
 
 globalThis.width = boardWidth;
 globalThis.height = boardHeight + 4;

@@ -1,4 +1,5 @@
 import {Position} from './definitions/position';
+import {toggleCharacterListVisibility} from './domManipulation';
 import {Game} from './game';
 import {getPosition} from './touch';
 
@@ -20,6 +21,16 @@ export class Controls {
     globalThis.gameElement.ontouchmove = this.handleTouchMove.bind(this);
     globalThis.gameElement.ontouchend = this.handleTouchEnd.bind(this);
     globalThis.gameElement.onmouseup = this.handleMouseUp.bind(this);
+    const characterListButton = document.getElementById('character-list-button');
+    if (characterListButton) {
+      characterListButton.onclick = toggleCharacterListVisibility;
+      characterListButton.ontouchstart = toggleCharacterListVisibility;
+    }
+    const characterListCancel = document.getElementById('character-list-cancel-button');
+    if (characterListCancel) {
+      characterListCancel.onclick = toggleCharacterListVisibility;
+      characterListCancel.ontouchstart = toggleCharacterListVisibility;
+    }
   }
 
   private handleTouchStart(event: TouchEvent): void {

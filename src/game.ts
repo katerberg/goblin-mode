@@ -4,7 +4,7 @@ import {Character} from './actors/character';
 import {Enemy} from './actors/enemy';
 import {Pause} from './actors/pause';
 import {Sheep} from './actors/sheep';
-import {symbols, times} from './constants';
+import {colors, symbols, times} from './constants';
 import {Controls} from './controls';
 import {Actor} from './definitions/actor';
 import {Position} from './definitions/position';
@@ -36,11 +36,14 @@ export class Game {
 
   private map: GameMap;
 
+  private visibleTiles: {[key: `${number},${number}`]: true};
+
   private flag: Position;
 
   constructor(width: number, height: number) {
     new Controls(this);
     this.map = new GameMap(width, height);
+    this.visibleTiles = {};
     const startGate = this.map.getStartGate();
     const endGate = this.map.getEndGate();
 
@@ -69,9 +72,6 @@ export class Game {
     this.enemies.forEach((enemy) => this.scheduler.add(enemy, true));
 
     this.init();
-
-    startGate.setBackgroundColor('tomato');
-    endGate.setBackgroundColor('rebeccapurple');
   }
 
   public get sheep(): Sheep[] {
@@ -120,8 +120,10 @@ export class Game {
 
   redrawTile(x: number, y: number): void {
     let symbol = symbols.SPACE_OPEN;
+    let fgColor = '#000';
     if (this.sheepActive.some((sheep) => sheep.isOccupying({x, y}))) {
-      return this.getSheepAt({x, y})?.draw(this.map.getTileColor(x, y));
+      symbol = symbols.SHEEP;
+      fgColor = this.getSheepAt({x, y})?.color || '#000';
     } else if (this.enemies.some((enemy) => enemy.isOccupying({x, y}))) {
       symbol = symbols.ENEMY;
     } else if (this.flag.x === x && this.flag.y === y) {
@@ -129,7 +131,21 @@ export class Game {
     } else if (this.map.matchesGate(x, y)) {
       symbol = symbols.GATE;
     }
-    globalThis.display.draw(x, y, symbol, '#000', this.map.getTileColor(x, y));
+
+    globalThis.display.draw(x, y, symbol, fgColor, this.getTileBackgroundColor(x, y));
+  }
+
+  private getTileBackgroundColor(x: number, y: number): string {
+    if (this.map.isNonWallTile(x, y)) {
+      if (this.visibleTiles[`${x},${y}`]) {
+        return colors.BACKGROUND_VISIBLE_PASSABLE;
+      }
+      return colors.BACKGROUND_NONVISIBLE_PASSABLE;
+    }
+    if (!this.map.isNonWallTile(x, y)) {
+      return colors.BACKGROUND_NONVISIBLE_IMPASSABLE;
+    }
+    return 'cyan';
   }
 
   pauseTimer(): void {
@@ -144,14 +160,15 @@ export class Game {
 
   drawFov(): void {
     const fov = new FOV.PreciseShadowcasting(this.map.isNonWallTile.bind(this.map));
-    const tilesToDraw: {[key: `${number},${number}`]: true} = {};
+    this.map.drawTiles();
+    this.visibleTiles = {};
     this.sheepActive.forEach((sheep) => {
       fov.compute(sheep.x, sheep.y, sheep.visibility, (x, y) => {
         this.map.seeTile(`${x},${y}`);
-        tilesToDraw[`${x},${y}`] = true;
+        this.visibleTiles[`${x},${y}`] = true;
       });
     });
-    Object.keys(tilesToDraw).forEach((tile) => {
+    Object.keys(this.visibleTiles).forEach((tile) => {
       const [x, y] = tile.split(',');
       this.redrawTile(Number.parseInt(x, 10), Number.parseInt(y, 10));
     });

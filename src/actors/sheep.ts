@@ -16,19 +16,19 @@ export class Sheep extends Character implements SpeedActor, Actor {
 
   public name: string;
 
-  private color: string;
+  color: string;
 
   constructor(x: number, y: number, game: Game, map: GameMap) {
     super({x, y}, game);
     this.name = getGoblinName();
     this.color = getRandomGreen();
     this.baseVisibility = 5;
-    this.speed = 5;
+    this.speed = 2;
     this.map = map;
   }
 
   setGoal(x: number, y: number): void {
-    this.goal = {x, y};
+    this.goal = `${x},${y}`;
   }
 
   public get position(): Position {

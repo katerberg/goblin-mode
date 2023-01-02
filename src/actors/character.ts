@@ -7,7 +7,7 @@ export abstract class Character {
 
   public y: number;
 
-  goal: Position;
+  goal: `${number},${number}`;
 
   game: Game;
 
@@ -15,7 +15,7 @@ export abstract class Character {
     this.game = game;
     this.x = position.x;
     this.y = position.y;
-    this.goal = {x: position.x, y: position.y};
+    this.goal = `${position.x},${position.y}`;
   }
 
   public isOccupying(position: Position): boolean {
@@ -23,7 +23,8 @@ export abstract class Character {
   }
 
   get path(): number[][] {
-    const pathToGoal = this.pathTo(this.goal);
+    const goal = this.goal.split(',');
+    const pathToGoal = this.pathTo({x: Number.parseInt(goal[0], 10), y: Number.parseInt(goal[1], 10)});
     if (pathToGoal.length) {
       return pathToGoal;
     }

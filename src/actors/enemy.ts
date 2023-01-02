@@ -2,7 +2,7 @@ import {SpeedActor} from 'rot-js';
 import {Actor} from '../definitions/actor';
 import {Position} from '../definitions/position';
 import {Game} from '../game';
-import {isWithin} from '../utils';
+import {getPositionFromCoords, isWithin} from '../utils';
 import {Character} from './character';
 import {Sheep} from './sheep';
 
@@ -11,13 +11,14 @@ export class Enemy extends Character implements SpeedActor, Actor {
 
   private baseVisibility: number;
 
-  private initialPosition: Position;
+  private initialPosition: `${number},${number}`;
 
   constructor(position: Position, game: Game) {
     super(position, game);
-    this.initialPosition = position;
+    this.initialPosition = `${position.x},${position.y}`;
     this.speed = 1;
     this.baseVisibility = 2;
+    console.log('og', this.initialPosition);
   }
 
   get visibility(): number {
@@ -48,20 +49,23 @@ export class Enemy extends Character implements SpeedActor, Actor {
     return closestSheep;
   }
 
+  getGoal(): Position {
+    return getPositionFromCoords(this.goal);
+  }
+
   public async act(): Promise<void> {
     const sheep = this.getClosestSheepInRange();
     if (sheep) {
-      this.goal = sheep.position;
+      this.goal = `${sheep.position.x},${sheep.position.y}`;
     }
-    if (sheep && isWithin(this.position, this.goal, 1)) {
+    if (sheep && isWithin(this.position, this.getGoal(), 1)) {
       console.log('attacking');
-    } else if (isWithin(this.goal, this.initialPosition, 0)) {
-      console.log('at home');
-    } else if (!isWithin(this.goal, this.position, this.baseVisibility)) {
-      console.log('walk home');
+    } else if (
+      (!isWithin(this.getGoal(), this.position, this.baseVisibility) || isWithin(this.getGoal(), this.position, 0)) &&
+      this.goal !== this.initialPosition
+    ) {
       this.goal = this.initialPosition;
     } else {
-      console.log('walking to', this.goal, 'from', this.position);
       const {path} = this;
       if (path[0] && !this.game.isOccupiedTile(path[0][0], path[0][1])) {
         const [[nextX, nextY]] = path;

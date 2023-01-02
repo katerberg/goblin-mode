@@ -26,6 +26,11 @@ export function isWithin(position1: Position, position2: Position, distance: num
   return Math.abs(position1.x - position2.x) < distance + 1 && Math.abs(position1.y - position2.y) < distance + 1;
 }
 
+export function getPositionFromCoords(coordinates: `${number},${number}`): Position {
+  const [x, y] = coordinates.split(',');
+  return {x: Number.parseInt(x, 10), y: Number.parseInt(y, 10)};
+}
+
 function shuffle<T>(array: T[]): T[] {
   let currentIndex = array.length;
   let randomIndex;

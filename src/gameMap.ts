@@ -1,5 +1,5 @@
 import {Map} from 'rot-js';
-import {colors, topOffset} from './constants';
+import {topOffset} from './constants';
 import {Position} from './definitions/position';
 import {Tile} from './tile';
 
@@ -66,10 +66,6 @@ export class GameMap {
     );
   }
 
-  getTileColor(x: number, y: number): string {
-    return this.getTile(x, y)?.backgroundColor || '#fff';
-  }
-
   isSeenTile(x: number, y: number): boolean {
     return !!this.seenTiles[`${x},${y}`];
   }
@@ -85,11 +81,11 @@ export class GameMap {
 
     const [x, y] = position.split(',');
     this.seenTiles[position] = this.tiles[x as unknown as number]?.[y as unknown as number] || null;
-    if (this.seenTiles[position]) {
-      this.seenTiles[position].setBackgroundColor(
-        this.seenTiles[position].isPassable ? colors.BACKGROUND_VISIBLE_PASSABLE : colors.BACKGROUND_VISIBLE_IMPASSABLE,
-      );
-    }
+    // if (this.seenTiles[position]) {
+    //   this.seenTiles[position].setBackgroundColor(
+    //     this.seenTiles[position].isPassable ? colors.BACKGROUND_VISIBLE_PASSABLE : colors.BACKGROUND_VISIBLE_IMPASSABLE,
+    //   );
+    // }
   }
 
   private getTile(x: number, y: number): Tile | undefined {

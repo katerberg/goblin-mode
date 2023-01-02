@@ -10,7 +10,7 @@ export class GameMap {
 
   private tiles: Tile[][];
 
-  private seenTiles: {[key: string]: Tile};
+  private seenTiles: {[key: `${number},${number}`]: Tile};
 
   constructor(width: number, height: number) {
     this.tiles = [];
@@ -57,11 +57,21 @@ export class GameMap {
   }
 
   drawTiles(): void {
-    this.tiles.forEach((tileRow) => tileRow.forEach((tile) => tile.draw()));
+    this.tiles.forEach((tileRow) =>
+      tileRow.forEach((tile) => {
+        if (this.seenTiles[`${tile.x},${tile.y}`]) {
+          tile.draw();
+        }
+      }),
+    );
   }
 
   getTileColor(x: number, y: number): string {
     return this.getTile(x, y)?.backgroundColor || '#fff';
+  }
+
+  isSeenTile(x: number, y: number): boolean {
+    return !!this.seenTiles[`${x},${y}`];
   }
 
   isNonWallTile(x: number, y: number): boolean {

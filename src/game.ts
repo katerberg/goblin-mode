@@ -84,7 +84,7 @@ export class Game {
   }
 
   handleSelect(x: number, y: number): void {
-    if (this.map.isNonWallTile(x, y)) {
+    if (this.map.isNonWallTile(x, y) && this.map.isSeenTile(x, y)) {
       this.setFlag(x, y);
     }
   }
@@ -202,8 +202,8 @@ export class Game {
   }
 
   async init(): Promise<void> {
+    this.sheepActive.forEach((sheep) => sheep.act());
     this.map.drawTiles();
-    this.sheepActive.forEach((sheep) => sheep.draw(this.map.getTileColor(sheep.x, sheep.y)));
     drawSomeText();
     // eslint-disable-next-line no-constant-condition
     while (1) {

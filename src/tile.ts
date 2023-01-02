@@ -14,7 +14,6 @@ export class Tile {
     this.y = y;
     this.isPassable = isPassable;
     this.backgroundColor = isPassable ? colors.BACKGROUND_NONVISIBLE_PASSABLE : colors.BACKGROUND_NONVISIBLE_IMPASSABLE;
-    this.draw();
   }
 
   setBackgroundColor(color: string): void {

@@ -53,8 +53,8 @@ export class Sheep extends Character implements SpeedActor, Actor {
       if (this.x === endGate.x && this.y === endGate.y) {
         this.game.handleSheepAtGate(this);
       }
-      this.game.drawFov();
     }
+    this.game.drawFov();
   }
 
   getSpeed(): number {

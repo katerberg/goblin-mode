@@ -16,6 +16,8 @@ export class Sheep extends Character implements SpeedActor, Actor {
 
   private goal: Position;
 
+  private baseVisibility: number;
+
   public name: string;
 
   private color: string;
@@ -24,6 +26,7 @@ export class Sheep extends Character implements SpeedActor, Actor {
     super({x, y});
     this.name = getGoblinName();
     this.color = getRandomGreen();
+    this.baseVisibility = 1;
     this.speed = 1;
     this.game = game;
     this.map = map;
@@ -32,6 +35,10 @@ export class Sheep extends Character implements SpeedActor, Actor {
 
   setGoal(x: number, y: number): void {
     this.goal = {x, y};
+  }
+
+  public get visibility(): number {
+    return this.baseVisibility;
   }
 
   public async act(): Promise<void> {
@@ -51,6 +58,7 @@ export class Sheep extends Character implements SpeedActor, Actor {
       if (this.x === endGate.x && this.y === endGate.y) {
         this.game.handleSheepAtGate(this);
       }
+      this.game.drawFov();
     }
   }
 

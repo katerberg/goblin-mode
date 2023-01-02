@@ -1,4 +1,4 @@
-import {Scheduler} from 'rot-js';
+import {FOV, Scheduler} from 'rot-js';
 import Speed from 'rot-js/lib/scheduler/speed';
 import {Enemy} from './actors/enemy';
 import {Pause} from './actors/pause';
@@ -73,8 +73,6 @@ export class Game {
     endGate.setBackgroundColor('rebeccapurple');
     this.redrawTile(this.enemies[0].x, this.enemies[0].y);
     this.redrawTile(endGate.x, endGate.y);
-    // globalThis.display.draw(0, globalThis.height - 3, 'blah blabh Active: 1 Safe: 0', 'null', '#ccc');
-    // globalThis.display.drawText(0, globalThis.height - 3, 'Active: 1 Safe: 0');
   }
 
   public get sheep(): Sheep[] {
@@ -135,6 +133,20 @@ export class Game {
     if (this.scheduler._current?.resolve) {
       this.scheduler._current.resolve();
     }
+  }
+
+  drawFov(): void {
+    const fov = new FOV.PreciseShadowcasting(this.map.isNonWallTile.bind(this.map));
+    this.sheepActive.forEach((sheep) => {
+      fov.compute(sheep.x, sheep.y, sheep.visibility, (x, y) => {
+        console.log(x, y);
+      });
+    });
+    // fov.compute(this.player.x, this.player.y, 500, (x, y) => {
+    //   const key = `${x},${y}`;
+    //   this.seenSpaces[key] = currentRun;
+    //   this.redrawSpace(x, y, !this.map[key]);
+    // });
   }
 
   private setFlag(x: number, y: number): void {

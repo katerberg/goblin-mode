@@ -1,4 +1,4 @@
-import {symbols} from './constants';
+import {colors, symbols} from './constants';
 
 export class Tile {
   public x: number;
@@ -13,7 +13,7 @@ export class Tile {
     this.x = x;
     this.y = y;
     this.isPassable = isPassable;
-    this.backgroundColor = isPassable ? '#dfdfdf' : '#ccc';
+    this.backgroundColor = isPassable ? colors.BACKGROUND_NONVISIBLE_PASSABLE : colors.BACKGROUND_NONVISIBLE_IMPASSABLE;
     this.draw();
   }
 

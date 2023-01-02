@@ -58,7 +58,7 @@ export class Enemy extends Character implements SpeedActor, Actor {
       this.goal = `${sheep.position.x},${sheep.position.y}`;
     }
     if (sheep && isWithin(this.position, this.getGoal(), 1)) {
-      console.log('attacking');
+      sheep.takeDamage(this.attack);
     } else if (
       (!isWithin(this.getGoal(), this.position, this.baseVisibility) || isWithin(this.getGoal(), this.position, 0)) &&
       this.goal !== this.initialPosition

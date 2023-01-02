@@ -9,7 +9,7 @@ import {Controls} from './controls';
 import {Actor} from './definitions/actor';
 import {Position} from './definitions/position';
 import {GameMap} from './gameMap';
-import {filterInPlace, isWithin, waitFor} from './utils';
+import {filterInPlace, waitFor} from './utils';
 
 const drawSomeText = (): void => {
   const ctx = (globalThis.display.getContainer() as HTMLCanvasElement)?.getContext('2d');
@@ -93,6 +93,7 @@ export class Game {
     this.sheepArrived.push(sheepAtGate);
     filterInPlace(this.sheepActive, (sheep) => sheepAtGate !== sheep);
     this.scheduler.remove(sheepAtGate);
+    this.redrawTile(sheepAtGate.x, sheepAtGate.y);
     this.redrawTile(this.map.getEndGate().x, this.map.getEndGate().y);
     if (this.sheepActive.length === 0) {
       this.handleLevelEnd();
@@ -180,6 +181,13 @@ export class Game {
     if (this.map.isSeenTile(endGate.x, endGate.y)) {
       this.redrawTile(endGate.x, endGate.y);
     }
+  }
+
+  killCharacter(character: Character): void {
+    this.scheduler.remove(character);
+    filterInPlace(this.sheepActive, (sheep) => character !== sheep);
+    filterInPlace(this.enemies, (enemy) => character !== enemy);
+    this.redrawTile(character.x, character.y);
   }
 
   private setFlag(x: number, y: number): void {

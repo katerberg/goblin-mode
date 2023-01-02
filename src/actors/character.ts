@@ -7,19 +7,55 @@ export abstract class Character {
 
   public y: number;
 
+  private baseAttack: number;
+
+  private baseArmor: number;
+
+  private baseHp: number;
+
+  private sufferedDamage: number;
+
   goal: `${number},${number}`;
 
   game: Game;
 
   constructor(position: Position, game: Game) {
     this.game = game;
+    this.baseHp = 1;
+    this.baseAttack = 1;
+    this.baseArmor = 1;
+    this.sufferedDamage = 0;
     this.x = position.x;
     this.y = position.y;
     this.goal = `${position.x},${position.y}`;
   }
 
+  public get attack(): number {
+    return this.baseAttack;
+  }
+
+  public get armor(): number {
+    return this.baseArmor;
+  }
+
+  public get hp(): number {
+    return this.baseHp - this.sufferedDamage;
+  }
+
   public isOccupying(position: Position): boolean {
     return position.x === this.x && position.y === this.y;
+  }
+
+  public die(): void {
+    console.log('i died', this.hp);
+    this.game.killCharacter(this);
+  }
+
+  public takeDamage(amount: number): void {
+    this.sufferedDamage += amount;
+    if (this.hp <= 0) {
+      this.die();
+    }
   }
 
   get path(): number[][] {

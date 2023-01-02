@@ -17,10 +17,13 @@ export class Sheep extends Character implements SpeedActor, Actor {
 
   public name: string;
 
+  private xp: number;
+
   color: string;
 
   constructor(x: number, y: number, game: Game, map: GameMap) {
     super({x, y}, game);
+    this.xp = 0;
     this.name = getGoblinName();
     this.color = getRandomGreen();
     this.baseVisibility = 5;
@@ -30,6 +33,21 @@ export class Sheep extends Character implements SpeedActor, Actor {
 
   setGoal(x: number, y: number): void {
     this.goal = `${x},${y}`;
+  }
+
+  // 1: 0
+  // 2: 1
+  // 3: 3
+  // 4: 6
+  // 5: 10
+  // 6: 15
+  public get level(): number {
+    let level = 1;
+    let {xp} = this;
+    while (xp > 0) {
+      xp -= level++;
+    }
+    return level;
   }
 
   public get position(): Position {
@@ -56,12 +74,17 @@ export class Sheep extends Character implements SpeedActor, Actor {
     return closestEnemy;
   }
 
+  private gainXp(xp: number): void {
+    this.xp += xp;
+  }
+
   public async act(): Promise<void> {
     const enemy = this.getClosestEnemyWithinRange();
     if (enemy) {
       // this.goal = `${enemy.position.x},${enemy.position.y}`;
       if (isWithin(this.position, enemy, this.range)) {
         enemy.takeDamage(this.attack);
+        this.gainXp(this.attack);
         return;
       }
     }

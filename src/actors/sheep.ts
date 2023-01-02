@@ -1,4 +1,4 @@
-import {Path, SpeedActor} from 'rot-js';
+import {SpeedActor} from 'rot-js';
 import {symbols} from '../constants';
 import {Actor} from '../definitions/actor';
 import {Position} from '../definitions/position';
@@ -10,11 +10,7 @@ import {Character} from './character';
 export class Sheep extends Character implements SpeedActor, Actor {
   private speed: number;
 
-  private game: Game;
-
   private map: GameMap;
-
-  private goal: Position;
 
   private baseVisibility: number;
 
@@ -23,18 +19,20 @@ export class Sheep extends Character implements SpeedActor, Actor {
   private color: string;
 
   constructor(x: number, y: number, game: Game, map: GameMap) {
-    super({x, y});
+    super({x, y}, game);
     this.name = getGoblinName();
     this.color = getRandomGreen();
-    this.baseVisibility = 3;
-    this.speed = 1;
-    this.game = game;
+    this.baseVisibility = 5;
+    this.speed = 5;
     this.map = map;
-    this.goal = {x, y};
   }
 
   setGoal(x: number, y: number): void {
     this.goal = {x, y};
+  }
+
+  public get position(): Position {
+    return {x: this.x, y: this.y};
   }
 
   public get visibility(): number {
@@ -63,36 +61,5 @@ export class Sheep extends Character implements SpeedActor, Actor {
 
   draw(bgColor: string): void {
     globalThis.display.draw(this.x, this.y, symbols.SHEEP, this.color, bgColor);
-  }
-
-  get path(): number[][] {
-    const pathToGoal = this.pathTo(this.goal);
-    if (pathToGoal.length) {
-      return pathToGoal;
-    }
-    const otherPositions = this.game.getSheepPositions(this);
-    for (const position of otherPositions) {
-      const pathToPosition = this.pathTo(position);
-      if (pathToPosition.length) {
-        return pathToPosition;
-      }
-    }
-    return [];
-  }
-
-  private pathTo(position: Position): number[][] {
-    const aStar = new Path.AStar(position.x, position.y, this.aStarCallback.bind(this), {topology: 8});
-    const path: number[][] = [];
-    const pathCallback = (x: number, y: number): void => {
-      path.push([x, y]);
-    };
-    aStar.compute(this.x, this.y, pathCallback);
-    path.shift();
-
-    return path;
-  }
-
-  private aStarCallback(x: number, y: number): boolean {
-    return (x === this.x && y === this.y) || (this.map.isNonWallTile(x, y) && !this.game.isOccupiedTile(x, y));
   }
 }

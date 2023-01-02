@@ -22,8 +22,8 @@ export function waitFor(ms: number): Promise<void> {
   return promise;
 }
 
-export function isNextTo(position1: Position, position2: Position): boolean {
-  return Math.abs(position1.x - position2.x) < 2 && Math.abs(position1.y - position2.y) < 2;
+export function isWithin(position1: Position, position2: Position, distance: number): boolean {
+  return Math.abs(position1.x - position2.x) < distance + 1 && Math.abs(position1.y - position2.y) < distance + 1;
 }
 
 function shuffle<T>(array: T[]): T[] {

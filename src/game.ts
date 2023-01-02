@@ -1,5 +1,6 @@
 import {FOV, Scheduler} from 'rot-js';
 import Speed from 'rot-js/lib/scheduler/speed';
+import {Character} from './actors/character';
 import {Enemy} from './actors/enemy';
 import {Pause} from './actors/pause';
 import {Sheep} from './actors/sheep';
@@ -71,8 +72,6 @@ export class Game {
 
     startGate.setBackgroundColor('tomato');
     endGate.setBackgroundColor('rebeccapurple');
-    this.redrawTile(this.enemies[0].x, this.enemies[0].y);
-    this.redrawTile(endGate.x, endGate.y);
   }
 
   public get sheep(): Sheep[] {
@@ -100,8 +99,16 @@ export class Game {
     }
   }
 
-  getSheepPositions(sheep?: Sheep): Position[] {
+  getSheepPositions(sheep?: Character): Position[] {
     return this.sheepActive.filter((s) => sheep !== s).map((s) => ({x: s.x, y: s.y}));
+  }
+
+  getSheepAt(position: Position): Sheep | undefined {
+    return this.sheepActive.find((sheep) => sheep.isOccupying(position));
+  }
+
+  isWalkableTile(x: number, y: number): boolean {
+    return !this.isOccupiedTile(x, y) && this.map.isNonWallTile(x, y);
   }
 
   isOccupiedTile(x: number, y: number): boolean {
@@ -114,7 +121,7 @@ export class Game {
   redrawTile(x: number, y: number): void {
     let symbol = symbols.SPACE_OPEN;
     if (this.sheepActive.some((sheep) => sheep.isOccupying({x, y}))) {
-      return this.sheepActive.find((sheep) => sheep.isOccupying({x, y}))?.draw(this.map.getTileColor(x, y));
+      return this.getSheepAt({x, y})?.draw(this.map.getTileColor(x, y));
     } else if (this.enemies.some((enemy) => enemy.isOccupying({x, y}))) {
       symbol = symbols.ENEMY;
     } else if (this.flag.x === x && this.flag.y === y) {
@@ -148,11 +155,6 @@ export class Game {
       const [x, y] = tile.split(',');
       this.redrawTile(Number.parseInt(x, 10), Number.parseInt(y, 10));
     });
-    // fov.compute(this.player.x, this.player.y, 500, (x, y) => {
-    //   const key = `${x},${y}`;
-    //   this.seenSpaces[key] = currentRun;
-    //   this.redrawSpace(x, y, !this.map[key]);
-    // });
   }
 
   private setFlag(x: number, y: number): void {

@@ -114,7 +114,7 @@ export class Game {
   redrawTile(x: number, y: number): void {
     let symbol = symbols.SPACE_OPEN;
     if (this.sheepActive.some((sheep) => sheep.isOccupying({x, y}))) {
-      symbol = symbols.SHEEP;
+      return this.sheepActive.find((sheep) => sheep.isOccupying({x, y}))?.draw(this.map.getTileColor(x, y));
     } else if (this.enemies.some((enemy) => enemy.isOccupying({x, y}))) {
       symbol = symbols.ENEMY;
     } else if (this.flag.x === x && this.flag.y === y) {
@@ -137,10 +137,16 @@ export class Game {
 
   drawFov(): void {
     const fov = new FOV.PreciseShadowcasting(this.map.isNonWallTile.bind(this.map));
+    const tilesToDraw: {[key: `${number},${number}`]: true} = {};
     this.sheepActive.forEach((sheep) => {
       fov.compute(sheep.x, sheep.y, sheep.visibility, (x, y) => {
-        console.log(x, y);
+        this.map.seeTile(`${x},${y}`);
+        tilesToDraw[`${x},${y}`] = true;
       });
+    });
+    Object.keys(tilesToDraw).forEach((tile) => {
+      const [x, y] = tile.split(',');
+      this.redrawTile(Number.parseInt(x, 10), Number.parseInt(y, 10));
     });
     // fov.compute(this.player.x, this.player.y, 500, (x, y) => {
     //   const key = `${x},${y}`;

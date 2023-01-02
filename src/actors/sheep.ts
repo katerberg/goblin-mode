@@ -26,7 +26,7 @@ export class Sheep extends Character implements SpeedActor, Actor {
     super({x, y});
     this.name = getGoblinName();
     this.color = getRandomGreen();
-    this.baseVisibility = 1;
+    this.baseVisibility = 3;
     this.speed = 1;
     this.game = game;
     this.map = map;
@@ -45,14 +45,9 @@ export class Sheep extends Character implements SpeedActor, Actor {
     const {path} = this;
     if (path[0] && !this.game.isOccupiedTile(path[0][0], path[0][1])) {
       const [[nextX, nextY]] = path;
-      const previousX = this.x;
-      const previousY = this.y;
 
       this.x = nextX;
       this.y = nextY;
-      this.game.redrawTile(previousX, previousY);
-
-      this.draw(this.map.getTileColor(this.x, this.y));
 
       const endGate = this.map.getEndGate();
       if (this.x === endGate.x && this.y === endGate.y) {

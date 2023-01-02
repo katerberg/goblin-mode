@@ -1,5 +1,5 @@
 import {Map} from 'rot-js';
-import {topOffset} from './constants';
+import {colors, topOffset} from './constants';
 import {Position} from './definitions/position';
 import {Tile} from './tile';
 
@@ -10,8 +10,11 @@ export class GameMap {
 
   private tiles: Tile[][];
 
+  private seenTiles: {[key: string]: Tile};
+
   constructor(width: number, height: number) {
     this.tiles = [];
+    this.seenTiles = {};
     const map = new Map.Cellular(width, height);
     const mapCallback = (x: number, y: number, contents: number): void => {
       const tileX = x;
@@ -63,6 +66,20 @@ export class GameMap {
 
   isNonWallTile(x: number, y: number): boolean {
     return !!this.getTile(x, y)?.isPassable;
+  }
+
+  seeTile(position: `${number},${number}`): void {
+    if (this.seenTiles[position] !== undefined) {
+      return;
+    }
+
+    const [x, y] = position.split(',');
+    this.seenTiles[position] = this.tiles[x as unknown as number]?.[y as unknown as number] || null;
+    if (this.seenTiles[position]) {
+      this.seenTiles[position].setBackgroundColor(
+        this.seenTiles[position].isPassable ? colors.BACKGROUND_VISIBLE_PASSABLE : colors.BACKGROUND_VISIBLE_IMPASSABLE,
+      );
+    }
   }
 
   private getTile(x: number, y: number): Tile | undefined {

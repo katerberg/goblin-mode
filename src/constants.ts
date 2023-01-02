@@ -1,5 +1,6 @@
 export const symbols = {
   ENEMY: '⚔',
+  PEASANT: 'ψ',
   FLAG: '⚑',
   GATE: '∩',
   SHEEP: '웃',

@@ -4,8 +4,9 @@ import {Actor} from '../definitions/actor';
 import {Position} from '../definitions/position';
 import {Game} from '../game';
 import {GameMap} from '../gameMap';
-import {getGoblinName, getRandomGreen} from '../utils';
+import {getGoblinName, getRandomGreen, isWithin} from '../utils';
 import {Character} from './character';
+import {Enemy} from './enemy';
 
 export class Sheep extends Character implements SpeedActor, Actor {
   private speed: number;
@@ -23,7 +24,7 @@ export class Sheep extends Character implements SpeedActor, Actor {
     this.name = getGoblinName();
     this.color = getRandomGreen();
     this.baseVisibility = 5;
-    this.speed = 2;
+    this.speed = 1;
     this.map = map;
   }
 
@@ -39,7 +40,32 @@ export class Sheep extends Character implements SpeedActor, Actor {
     return this.baseVisibility;
   }
 
+  private getClosestEnemyWithinRange(): Enemy | undefined {
+    let closestEnemy: Enemy | undefined;
+    for (let i = 1; i <= this.visibility; i++) {
+      for (const enemyPosition of this.game.getEnemyPositions()) {
+        if (isWithin(this.position, enemyPosition, i)) {
+          closestEnemy = this.game.getEnemyAt(enemyPosition);
+          break;
+        }
+      }
+      if (closestEnemy) {
+        break;
+      }
+    }
+    return closestEnemy;
+  }
+
   public async act(): Promise<void> {
+    const enemy = this.getClosestEnemyWithinRange();
+    if (enemy) {
+      // this.goal = `${enemy.position.x},${enemy.position.y}`;
+      if (isWithin(this.position, enemy, this.range)) {
+        enemy.takeDamage(this.attack);
+        return;
+      }
+    }
+
     const {path} = this;
     if (path[0] && !this.game.isOccupiedTile(path[0][0], path[0][1])) {
       const [[nextX, nextY]] = path;

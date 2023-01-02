@@ -3,6 +3,7 @@ import Speed from 'rot-js/lib/scheduler/speed';
 import {Character} from './actors/character';
 import {Enemy} from './actors/enemy';
 import {Pause} from './actors/pause';
+import {Peasant} from './actors/peasant';
 import {Sheep} from './actors/sheep';
 import {colors, symbols, times} from './constants';
 import {Controls} from './controls';
@@ -68,7 +69,7 @@ export class Game {
       }
     }
     this.map.getEndGate();
-    this.enemies = [new Enemy(enemyLocation, this)];
+    this.enemies = [new Peasant(enemyLocation, this)];
     this.enemies.forEach((enemy) => this.scheduler.add(enemy, true));
 
     this.init();
@@ -108,6 +109,14 @@ export class Game {
     return this.sheepActive.find((sheep) => sheep.isOccupying(position));
   }
 
+  getEnemyPositions(): Position[] {
+    return this.enemies.map((e) => ({x: e.x, y: e.y}));
+  }
+
+  getEnemyAt(position: Position): Enemy | undefined {
+    return this.enemies.find((enemy) => enemy.isOccupying(position));
+  }
+
   isWalkableTile(x: number, y: number): boolean {
     return !this.isOccupiedTile(x, y) && this.map.isNonWallTile(x, y);
   }
@@ -126,7 +135,12 @@ export class Game {
       symbol = symbols.SHEEP;
       fgColor = this.getSheepAt({x, y})?.color || '#000';
     } else if (this.enemies.some((enemy) => enemy.isOccupying({x, y}))) {
-      symbol = symbols.ENEMY;
+      const enemy = this.enemies.find((e) => e.isOccupying({x, y}));
+      if (enemy instanceof Peasant) {
+        symbol = symbols.PEASANT;
+      } else {
+        symbol = symbols.ENEMY;
+      }
     } else if (this.flag.x === x && this.flag.y === y) {
       fgColor = colors.FLAG;
       symbol = symbols.FLAG;
@@ -244,7 +258,7 @@ export class Game {
     while (1) {
       // eslint-disable-next-line no-await-in-loop
       const good = await this.nextTurn();
-      if (!good) {
+      if (!good || this.sheepActive.length === 0) {
         // eslint-disable-next-line no-console
         console.debug('breaking due to no actors');
         break;

@@ -34,7 +34,7 @@ export class Enemy extends Character implements SpeedActor, Actor {
 
   private getClosestSheepInRange(): Sheep | undefined {
     let closestSheep: Sheep | undefined;
-    for (let i = 1; i <= this.baseVisibility; i++) {
+    for (let i = 1; i <= this.visibility; i++) {
       for (const sheepPosition of this.game.getSheepPositions()) {
         if (isWithin(this.position, sheepPosition, i)) {
           closestSheep = this.game.getSheepAt(sheepPosition);
@@ -57,7 +57,7 @@ export class Enemy extends Character implements SpeedActor, Actor {
     if (sheep) {
       this.goal = `${sheep.position.x},${sheep.position.y}`;
     }
-    if (sheep && isWithin(this.position, this.getGoal(), 1)) {
+    if (sheep && isWithin(this.position, this.getGoal(), this.range)) {
       sheep.takeDamage(this.attack);
     } else if (
       (!isWithin(this.getGoal(), this.position, this.baseVisibility) || isWithin(this.getGoal(), this.position, 0)) &&

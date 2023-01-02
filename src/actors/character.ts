@@ -7,11 +7,13 @@ export abstract class Character {
 
   public y: number;
 
+  private baseRange: number;
+
   private baseAttack: number;
 
   private baseArmor: number;
 
-  private baseHp: number;
+  protected baseHp: number;
 
   private sufferedDamage: number;
 
@@ -21,6 +23,7 @@ export abstract class Character {
 
   constructor(position: Position, game: Game) {
     this.game = game;
+    this.baseRange = 1;
     this.baseHp = 1;
     this.baseAttack = 1;
     this.baseArmor = 1;
@@ -28,6 +31,10 @@ export abstract class Character {
     this.x = position.x;
     this.y = position.y;
     this.goal = `${position.x},${position.y}`;
+  }
+
+  public get range(): number {
+    return this.baseRange;
   }
 
   public get attack(): number {
@@ -47,7 +54,6 @@ export abstract class Character {
   }
 
   public die(): void {
-    console.log('i died', this.hp);
     this.game.killCharacter(this);
   }
 

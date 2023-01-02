@@ -18,7 +18,6 @@ export class Enemy extends Character implements SpeedActor, Actor {
     this.initialPosition = `${position.x},${position.y}`;
     this.speed = 1;
     this.baseVisibility = 2;
-    console.log('og', this.initialPosition);
   }
 
   get visibility(): number {

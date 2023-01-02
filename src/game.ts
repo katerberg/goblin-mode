@@ -9,7 +9,7 @@ import {Controls} from './controls';
 import {Actor} from './definitions/actor';
 import {Position} from './definitions/position';
 import {GameMap} from './gameMap';
-import {filterInPlace, waitFor} from './utils';
+import {filterInPlace, isWithin, waitFor} from './utils';
 
 const drawSomeText = (): void => {
   const ctx = (globalThis.display.getContainer() as HTMLCanvasElement)?.getContext('2d');
@@ -127,8 +127,10 @@ export class Game {
     } else if (this.enemies.some((enemy) => enemy.isOccupying({x, y}))) {
       symbol = symbols.ENEMY;
     } else if (this.flag.x === x && this.flag.y === y) {
+      fgColor = colors.FLAG;
       symbol = symbols.FLAG;
     } else if (this.map.matchesGate(x, y)) {
+      fgColor = colors.GATE;
       symbol = symbols.GATE;
     }
 
@@ -137,15 +139,15 @@ export class Game {
 
   private getTileBackgroundColor(x: number, y: number): string {
     if (this.map.isNonWallTile(x, y)) {
+      if (this.map.matchesGate(x, y)) {
+        return colors.BACKGROUND_GATE;
+      }
       if (this.visibleTiles[`${x},${y}`]) {
         return colors.BACKGROUND_VISIBLE_PASSABLE;
       }
       return colors.BACKGROUND_NONVISIBLE_PASSABLE;
     }
-    if (!this.map.isNonWallTile(x, y)) {
-      return colors.BACKGROUND_NONVISIBLE_IMPASSABLE;
-    }
-    return 'cyan';
+    return colors.BACKGROUND_NONVISIBLE_IMPASSABLE;
   }
 
   pauseTimer(): void {
@@ -172,6 +174,12 @@ export class Game {
       const [x, y] = tile.split(',');
       this.redrawTile(Number.parseInt(x, 10), Number.parseInt(y, 10));
     });
+    this.redrawTile(this.flag.x, this.flag.y);
+    this.redrawTile(this.map.getStartGate().x, this.map.getStartGate().y);
+    const endGate = this.map.getEndGate();
+    if (this.map.isSeenTile(endGate.x, endGate.y)) {
+      this.redrawTile(endGate.x, endGate.y);
+    }
   }
 
   private setFlag(x: number, y: number): void {

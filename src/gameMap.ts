@@ -81,11 +81,6 @@ export class GameMap {
 
     const [x, y] = position.split(',');
     this.seenTiles[position] = this.tiles[x as unknown as number]?.[y as unknown as number] || null;
-    // if (this.seenTiles[position]) {
-    //   this.seenTiles[position].setBackgroundColor(
-    //     this.seenTiles[position].isPassable ? colors.BACKGROUND_VISIBLE_PASSABLE : colors.BACKGROUND_VISIBLE_IMPASSABLE,
-    //   );
-    // }
   }
 
   private getTile(x: number, y: number): Tile | undefined {

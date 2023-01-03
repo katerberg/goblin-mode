@@ -27,7 +27,7 @@ export class Sheep extends Character implements SpeedActor, Actor {
     this.name = getGoblinName();
     this.color = getRandomGreen();
     this.baseVisibility = 5;
-    this.speed = 1;
+    this.speed = 100;
     this.map = map;
   }
 

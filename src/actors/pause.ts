@@ -9,7 +9,7 @@ export class Pause implements SpeedActor, Actor {
   public resolve: () => void;
 
   constructor() {
-    this.speed = 1;
+    this.speed = 10000;
     //eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     this.resolve = () => {};
     this.resolver = new Promise((resolve) => {

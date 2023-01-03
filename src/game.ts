@@ -1,6 +1,7 @@
 import {FOV, Scheduler} from 'rot-js';
 import Speed from 'rot-js/lib/scheduler/speed';
 import {Character} from './actors/character';
+import {Demon} from './actors/demon';
 import {Enemy} from './actors/enemy';
 import {Pause} from './actors/pause';
 import {Peasant} from './actors/peasant';
@@ -41,6 +42,8 @@ export class Game {
 
   private flag: Position;
 
+  private demon: Demon;
+
   constructor(width: number, height: number) {
     new Controls(this);
     this.map = new GameMap(width, height);
@@ -71,12 +74,14 @@ export class Game {
     this.map.getEndGate();
     this.enemies = [new Peasant(enemyLocation, this)];
     this.enemies.forEach((enemy) => this.scheduler.add(enemy, true));
+    this.demon = new Demon();
+    this.scheduler.add(this.demon, true, 1);
 
     this.init();
   }
 
   public get sheep(): Sheep[] {
-    return [...this.sheepActive, ...this.sheepQueued];
+    return [...this.sheepActive, ...this.sheepQueued, ...this.sheepArrived];
   }
 
   isTileFreeOfSheep(x: number, y: number): boolean {
@@ -195,6 +200,7 @@ export class Game {
     if (this.map.isSeenTile(endGate.x, endGate.y)) {
       this.redrawTile(endGate.x, endGate.y);
     }
+    this.map.drawDemonFire(this.demon.burningSpaces);
   }
 
   killCharacter(character: Character): void {
@@ -260,7 +266,7 @@ export class Game {
       const good = await this.nextTurn();
       if (!good || this.sheepActive.length === 0) {
         // eslint-disable-next-line no-console
-        console.debug('breaking due to no actors');
+        console.debug(`breaking due to no ${good ? 'sheep' : 'actors'}`);
         break;
       }
     }

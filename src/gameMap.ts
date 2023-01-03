@@ -1,5 +1,5 @@
 import {Map} from 'rot-js';
-import {topOffset} from './constants';
+import {colors, topOffset} from './constants';
 import {Position} from './definitions/position';
 import {Tile} from './tile';
 
@@ -54,6 +54,29 @@ export class GameMap {
       (this.startGatePosition.x === x && this.startGatePosition.y === y) ||
       (this.endGatePosition.x === x && this.endGatePosition.y === y)
     );
+  }
+
+  drawDemonFire(burningSpaces: number): void {
+    const fireColors = [
+      colors.DEMON_FIRE_5, // lightest
+      colors.DEMON_FIRE_4,
+      colors.DEMON_FIRE_3,
+      colors.DEMON_FIRE_2,
+      colors.DEMON_FIRE_1, // darkest
+    ];
+
+    for (let y = 0; y < burningSpaces; y++) {
+      for (let x = 0; x < this.tiles.length; x++) {
+        const percentage = (fireColors.length * y) / burningSpaces + 0.02;
+        globalThis.display.draw(
+          x,
+          this.tiles[1].length - 1 - y,
+          '',
+          null,
+          fireColors[Math.random() > 0.5 ? Math.ceil(percentage) : Math.floor(percentage)],
+        );
+      }
+    }
   }
 
   drawTiles(): void {

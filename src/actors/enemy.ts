@@ -16,7 +16,7 @@ export class Enemy extends Character implements SpeedActor, Actor {
   constructor(position: Position, game: Game) {
     super(position, game);
     this.initialPosition = `${position.x},${position.y}`;
-    this.speed = 1;
+    this.speed = 100;
     this.baseVisibility = 2;
   }
 

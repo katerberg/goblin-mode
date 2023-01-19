@@ -13,6 +13,7 @@ globalThis.display = new ROT.Display({width: board.width, height: globalThis.hei
 window.addEventListener('load', () => {
   const container = globalThis.display.getContainer() as HTMLCanvasElement;
   if (container) {
+    document.querySelector('body')?.requestFullscreen();
     const gameElement = document.getElementById('game');
     if (gameElement) {
       globalThis.gameElement = gameElement;

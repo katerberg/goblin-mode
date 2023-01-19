@@ -13,18 +13,6 @@ import {Position} from './definitions/position';
 import {GameMap} from './gameMap';
 import {filterInPlace, waitFor} from './utils';
 
-const drawSomeText = (): void => {
-  const ctx = (globalThis.display.getContainer() as HTMLCanvasElement)?.getContext('2d');
-  if (ctx) {
-    ctx.strokeStyle = 'orange';
-    ctx.fillStyle = 'orange';
-    const string = 'This is now a longer message';
-    const leftPad = Math.floor(string.length / 2) * 15;
-
-    ctx.fillText(string, leftPad, 33);
-  }
-};
-
 export class Game {
   private scheduler: Speed;
 
@@ -259,7 +247,6 @@ export class Game {
   async init(): Promise<void> {
     this.sheepActive.forEach((sheep) => sheep.act());
     this.map.drawTiles();
-    drawSomeText();
     // eslint-disable-next-line no-constant-condition
     while (1) {
       // eslint-disable-next-line no-await-in-loop

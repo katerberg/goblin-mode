@@ -2,6 +2,7 @@ import './index.scss';
 import * as ROT from 'rot-js';
 import {board} from './constants';
 import {Game} from './game';
+import {Intro} from './intro';
 
 const boardWidth = board.width;
 const boardHeight = board.height;
@@ -13,7 +14,6 @@ globalThis.display = new ROT.Display({width: board.width, height: globalThis.hei
 window.addEventListener('load', () => {
   const container = globalThis.display.getContainer() as HTMLCanvasElement;
   if (container) {
-    document.querySelector('body')?.requestFullscreen();
     const gameElement = document.getElementById('game');
     if (gameElement) {
       globalThis.gameElement = gameElement;
@@ -23,8 +23,11 @@ window.addEventListener('load', () => {
       };
     }
   }
+  const startGame: () => void = () => {
+    new Game(boardWidth, boardHeight);
+  };
 
-  new Game(boardWidth, boardHeight);
+  new Intro(startGame);
 });
 
 globalThis.goblinNames = [

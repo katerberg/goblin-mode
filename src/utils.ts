@@ -13,6 +13,30 @@ export function filterInPlace<Type>(array: Array<Type>, fn: (arg0: Type) => bool
   array.length = to;
 }
 
+export function drawSomeText(
+  text: string,
+  x: number | undefined,
+  y: number | undefined,
+  font: string | undefined,
+  textAlign?: CanvasTextAlign,
+): void {
+  const ctx = (globalThis.display.getContainer() as HTMLCanvasElement)?.getContext('2d');
+  if (ctx) {
+    const prevAlign = ctx.textAlign;
+    const prevFill = ctx.fillStyle;
+    const prevFont = ctx.font;
+    ctx.textAlign = textAlign || 'left';
+    ctx.fillStyle = 'orange';
+    ctx.font = font || '50px serif';
+
+    ctx.fillText(text, x || ctx.canvas.width / 2, y || ctx.canvas.height / 2);
+
+    ctx.textAlign = prevAlign;
+    ctx.fillStyle = prevFill;
+    ctx.font = prevFont;
+  }
+}
+
 export function waitFor(ms: number): Promise<void> {
   let resolve: () => void;
   const promise = new Promise((promiseResolve) => {

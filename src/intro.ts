@@ -1,4 +1,4 @@
-import {drawSomeText} from './utils';
+import {drawSomeText, isDebug} from './utils';
 
 export class Intro {
   private gameStartCallback: () => void;
@@ -7,12 +7,18 @@ export class Intro {
     this.gameStartCallback = gameStartCallback;
 
     drawSomeText('Goblin Mode', undefined, undefined, undefined, 'center');
-    globalThis.gameElement.ontouchstart = this.startGame.bind(this);
+    if (isDebug()) {
+      this.startGame();
+    } else {
+      globalThis.gameElement.ontouchstart = this.startGame.bind(this);
+    }
   }
 
   async startGame(): Promise<void> {
     globalThis.display.clear();
-    await document.querySelector('body')?.requestFullscreen();
+    if (!isDebug()) {
+      await document.querySelector('body')?.requestFullscreen();
+    }
     this.gameStartCallback();
   }
 }

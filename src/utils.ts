@@ -13,6 +13,12 @@ export function filterInPlace<Type>(array: Array<Type>, fn: (arg0: Type) => bool
   array.length = to;
 }
 
+export function isDebug(): boolean {
+  const url = new URL(window.location.href);
+  const debug = url.searchParams.get('debug');
+  return debug !== null;
+}
+
 export function drawSomeText(
   text: string,
   x: number | undefined,

@@ -11,6 +11,7 @@ import {Controls} from './controls';
 import {Actor} from './definitions/actor';
 import {Position} from './definitions/position';
 import {GameMap} from './gameMap';
+import {isInFire} from './mapUtils';
 import {filterInPlace, waitFor} from './utils';
 
 export class Game {
@@ -77,7 +78,7 @@ export class Game {
   }
 
   handleSelect(x: number, y: number): void {
-    if (this.map.isNonWallTile(x, y) && this.map.isSeenTile(x, y)) {
+    if (this.map.isNonWallTile(x, y) && this.map.isSeenTile(x, y) && !isInFire(y, this.demon)) {
       this.setFlag(x, y);
     }
   }
@@ -237,8 +238,11 @@ export class Game {
     if (this.sheepQueued.length !== 0 && this.isTileFreeOfSheep(startGate.x, startGate.y)) {
       this.spawnSheep();
     }
-    if (this.sheepActive.length && actor === this.sheepActive[0]) {
-      await waitFor(times.TURN_DELAY);
+    if (this.sheepActive.length) {
+      if (actor === this.sheepActive[0]) {
+        await waitFor(times.TURN_DELAY);
+      }
+      filterInPlace(this.sheepActive, (sheep) => !isInFire(sheep.y, this.demon));
     }
     await actor.act();
     return true;

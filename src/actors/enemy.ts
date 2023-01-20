@@ -2,7 +2,7 @@ import {SpeedActor} from 'rot-js';
 import {Actor} from '../definitions/actor';
 import {Position} from '../definitions/position';
 import {Game} from '../game';
-import {getPositionFromCoords, isWithin} from '../utils';
+import {getPositionFromCoords, isWithin} from '../mapUtils';
 import {Character} from './character';
 import {Sheep} from './sheep';
 

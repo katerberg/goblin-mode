@@ -1,5 +1,3 @@
-import {Position} from './definitions/position';
-
 export function filterInPlace<Type>(array: Array<Type>, fn: (arg0: Type) => boolean): void {
   let from = 0,
     to = 0;
@@ -50,15 +48,6 @@ export function waitFor(ms: number): Promise<void> {
   }) as Promise<void>;
   setTimeout(() => resolve(), ms);
   return promise;
-}
-
-export function isWithin(position1: Position, position2: Position, distance: number): boolean {
-  return Math.abs(position1.x - position2.x) < distance + 1 && Math.abs(position1.y - position2.y) < distance + 1;
-}
-
-export function getPositionFromCoords(coordinates: `${number},${number}`): Position {
-  const [x, y] = coordinates.split(',');
-  return {x: Number.parseInt(x, 10), y: Number.parseInt(y, 10)};
 }
 
 function shuffle<T>(array: T[]): T[] {

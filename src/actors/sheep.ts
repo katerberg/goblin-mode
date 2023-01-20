@@ -4,7 +4,8 @@ import {Actor} from '../definitions/actor';
 import {Position} from '../definitions/position';
 import {Game} from '../game';
 import {GameMap} from '../gameMap';
-import {getGoblinName, getRandomGreen, isWithin} from '../utils';
+import {isWithin} from '../mapUtils';
+import {getGoblinName, getRandomGreen} from '../utils';
 import {Character} from './character';
 import {Enemy} from './enemy';
 

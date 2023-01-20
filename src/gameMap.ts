@@ -2,6 +2,7 @@ import {Map} from 'rot-js';
 import {colors, topOffset} from './constants';
 import {Position} from './definitions/position';
 import {Tile} from './tile';
+import {getRandomNumber} from './utils';
 
 export class GameMap {
   private startGatePosition: Position;
@@ -29,16 +30,26 @@ export class GameMap {
       map.create(mapCallback.bind(this));
     });
     map.connect(mapCallback.bind(this), 1);
-    const startTile = this.getRandomTile(this.tiles[topOffset].length - 1, false);
+    const startTile = this.getRandomTileFromRow(this.tiles[topOffset].length - 1, false);
     this.startGatePosition = {
       x: startTile.x,
       y: startTile.y,
     };
-    const endTile = this.getRandomTile(topOffset, true);
+    const endTile = this.getRandomTileFromRow(topOffset, true);
     this.endGatePosition = {
       x: endTile.x,
       y: endTile.y,
     };
+  }
+
+  getRandomPassableTile(): Tile {
+    for (let i = 0; i <= 1000; i++) {
+      const tile = this.tiles[getRandomNumber(0, this.tiles.length - 1)][getRandomNumber(0, this.tiles[0].length - 1)];
+      if (tile.isPassable && !this.matchesGate(tile.x, tile.y)) {
+        return tile;
+      }
+    }
+    throw new Error('Could not find a valid tile');
   }
 
   getStartGate(): Tile {
@@ -110,7 +121,7 @@ export class GameMap {
     return this.tiles?.[x]?.[y];
   }
 
-  private getRandomTile(startRow: number, increasing: boolean): Tile {
+  private getRandomTileFromRow(startRow: number, increasing: boolean): Tile {
     let tile: Tile | undefined = undefined;
     for (let rowNumber = startRow; !tile; rowNumber += increasing ? 1 : -1) {
       const filteredColumns = this.tiles.filter((column) => column[rowNumber].isPassable);

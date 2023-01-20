@@ -38,7 +38,6 @@ export class Game {
     this.map = new GameMap(width, height);
     this.visibleTiles = {};
     const startGate = this.map.getStartGate();
-    const endGate = this.map.getEndGate();
 
     this.flag = {x: startGate.x, y: startGate.y};
 
@@ -51,17 +50,8 @@ export class Game {
     this.sheepArrived = [];
     this.scheduler = new Scheduler.Speed();
     this.sheepActive.forEach((sheep) => this.scheduler.add(sheep, true));
-    let enemyLocation: Position | undefined;
-    let enemyLocationIndex = 1;
-    while (!enemyLocation) {
-      if (this.map.isNonWallTile(endGate.x, endGate.y + enemyLocationIndex)) {
-        enemyLocation = {y: endGate.y + enemyLocationIndex, x: endGate.x};
-      } else if (++enemyLocationIndex > height) {
-        throw new Error('no valid location');
-      }
-    }
-    this.map.getEndGate();
-    this.enemies = [new Peasant(enemyLocation, this)];
+    this.enemies = [];
+    this.enemies.push(this.spawnPeasant());
     this.enemies.forEach((enemy) => this.scheduler.add(enemy, true));
     this.demon = new Demon();
     this.scheduler.add(this.demon, true, 1);
@@ -157,6 +147,19 @@ export class Game {
       return colors.BACKGROUND_NONVISIBLE_PASSABLE;
     }
     return colors.BACKGROUND_NONVISIBLE_IMPASSABLE;
+  }
+
+  private spawnPeasant(): Peasant {
+    for (let i = 0; i <= 1000; i++) {
+      const tile = this.map.getRandomPassableTile();
+      if (
+        !this.sheepActive.some((sheep) => sheep.isOccupying({x: tile.x, y: tile.y})) &&
+        !this.enemies.some((enemy) => enemy.isOccupying({x: tile.x, y: tile.y}))
+      ) {
+        return new Peasant({x: tile.x, y: tile.y}, this);
+      }
+    }
+    throw new Error('no valid location');
   }
 
   pauseTimer(): void {

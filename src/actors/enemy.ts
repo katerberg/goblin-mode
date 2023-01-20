@@ -6,7 +6,7 @@ import {getPositionFromCoords, isWithin} from '../mapUtils';
 import {Character} from './character';
 import {Sheep} from './sheep';
 
-export class Enemy extends Character implements SpeedActor, Actor {
+export abstract class Enemy extends Character implements SpeedActor, Actor {
   private speed: number;
 
   private baseVisibility: number;
@@ -17,7 +17,7 @@ export class Enemy extends Character implements SpeedActor, Actor {
     super(position, game);
     this.initialPosition = `${position.x},${position.y}`;
     this.speed = 100;
-    this.baseVisibility = 2;
+    this.baseVisibility = 3;
   }
 
   get visibility(): number {

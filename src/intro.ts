@@ -6,7 +6,7 @@ export class Intro {
   constructor(gameStartCallback: () => void) {
     this.gameStartCallback = gameStartCallback;
 
-    drawSomeText('Goblin Mode', undefined, undefined, undefined, 'center');
+    drawSomeText('Goblin Mode', undefined, undefined, {textAlign: 'center', color: 'orange'});
     if (isDebug()) {
       this.startGame();
     } else {

@@ -24,21 +24,21 @@ export function clearScreen(): void {
   }
 }
 
-export function drawSomeText(
-  text: string,
-  x: number | undefined,
-  y: number | undefined,
-  font: string | undefined,
-  textAlign?: CanvasTextAlign,
-): void {
+type DrawOptions = {
+  color?: string;
+  font?: string;
+  textAlign?: CanvasTextAlign;
+};
+
+export function drawSomeText(text: string, x: number | undefined, y: number | undefined, options?: DrawOptions): void {
   const ctx = (globalThis.display.getContainer() as HTMLCanvasElement)?.getContext('2d');
   if (ctx) {
     const prevAlign = ctx.textAlign;
     const prevFill = ctx.fillStyle;
     const prevFont = ctx.font;
-    ctx.textAlign = textAlign || 'left';
-    ctx.fillStyle = 'orange';
-    ctx.font = font || '50px serif';
+    ctx.textAlign = options?.textAlign || 'left';
+    ctx.fillStyle = options?.color || 'white';
+    ctx.font = options?.font || '50px serif';
 
     ctx.fillText(text, x || ctx.canvas.width / 2, y || ctx.canvas.height / 2);
 

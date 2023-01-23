@@ -1,5 +1,5 @@
 import {SpeedActor} from 'rot-js';
-import {symbols} from '../constants';
+import {Status, symbols} from '../constants';
 import {Actor} from '../definitions/actor';
 import {Position} from '../definitions/position';
 import {Game} from '../game';
@@ -22,8 +22,11 @@ export class Sheep extends Character implements SpeedActor, Actor {
 
   color: string;
 
+  status: Status;
+
   constructor(x: number, y: number, game: Game, map: GameMap) {
     super({x, y}, game);
+    this.status = Status.QUEUED;
     this.xp = 0;
     this.name = getGoblinName();
     this.color = getRandomGreen();
@@ -82,7 +85,6 @@ export class Sheep extends Character implements SpeedActor, Actor {
   public async act(): Promise<void> {
     const enemy = this.getClosestEnemyWithinRange();
     if (enemy) {
-      // this.goal = `${enemy.position.x},${enemy.position.y}`;
       if (isWithin(this.position, enemy, this.range)) {
         enemy.takeDamage(this.attack);
         this.gainXp(this.attack);
@@ -91,18 +93,22 @@ export class Sheep extends Character implements SpeedActor, Actor {
     }
 
     const {path} = this;
-    if (path[0] && !this.game.isOccupiedTile(path[0][0], path[0][1])) {
+    const canMove = path[0] && !this.game.isOccupiedTile(path[0][0], path[0][1]);
+    if (canMove) {
       const [[nextX, nextY]] = path;
 
       this.x = nextX;
       this.y = nextY;
+    }
 
+    this.game.drawFov();
+
+    if (canMove) {
       const endGate = this.map.getEndGate();
       if (this.x === endGate.x && this.y === endGate.y) {
         this.game.handleSheepAtGate(this);
       }
     }
-    this.game.drawFov();
   }
 
   getSpeed(): number {

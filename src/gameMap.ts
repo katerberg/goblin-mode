@@ -2,7 +2,7 @@ import {Map} from 'rot-js';
 import {colors, topOffset} from './constants';
 import {Position} from './definitions/position';
 import {Tile} from './tile';
-import {getRandomNumber} from './utils';
+import {clearScreen, getRandomNumber} from './utils';
 
 export class GameMap {
   private startGatePosition: Position;
@@ -11,12 +11,33 @@ export class GameMap {
 
   private tiles: Tile[][];
 
+  private width: number;
+
+  private height: number;
+
   private seenTiles: {[key: `${number},${number}`]: Tile};
 
   constructor(width: number, height: number) {
+    this.width = width;
+    this.height = height;
     this.tiles = [];
     this.seenTiles = {};
-    const map = new Map.Cellular(width, height);
+    this.startGatePosition = {x: 0, y: 0};
+    this.endGatePosition = {x: 0, y: 0};
+    this.init();
+  }
+
+  get numberOfPassableTiles(): number {
+    return this.tiles.reduce((p, c) => p + c.filter((t) => t.isPassable).length, 0);
+  }
+
+  init(): void {
+    for (const prop of Object.getOwnPropertyNames(this.seenTiles)) {
+      delete this.seenTiles[prop as `${number},${number}`];
+    }
+
+    this.tiles.length = 0;
+    const map = new Map.Cellular(this.width, this.height);
     const mapCallback = (x: number, y: number, contents: number): void => {
       const tileX = x;
       const tileY = y + topOffset;
@@ -44,8 +65,10 @@ export class GameMap {
 
   getRandomPassableTile(): Tile {
     for (let i = 0; i <= 1000; i++) {
-      const tile = this.tiles[getRandomNumber(0, this.tiles.length - 1)][getRandomNumber(0, this.tiles[0].length - 1)];
-      if (tile.isPassable && !this.matchesGate(tile.x, tile.y)) {
+      const firstRandom = getRandomNumber(0, this.tiles.length - 1);
+      const secondRandom = getRandomNumber(0, this.tiles[0].length - 1);
+      const tile = this.tiles[firstRandom][secondRandom];
+      if (tile?.isPassable && !this.matchesGate(tile.x, tile.y)) {
         return tile;
       }
     }

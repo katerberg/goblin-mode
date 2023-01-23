@@ -32,11 +32,11 @@ export class Controls {
 
   private handleCharacterListOpen(): void {
     this.game.pauseTimer();
-    toggleCharacterListVisibility(this.game.sheep);
+    toggleCharacterListVisibility(this.game.sheepAlive);
   }
 
   private handleCharacterListClose(): void {
-    toggleCharacterListVisibility(this.game.sheep);
+    toggleCharacterListVisibility(this.game.sheepAlive);
     this.game.unpauseTimer();
   }
 

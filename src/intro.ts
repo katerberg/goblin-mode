@@ -1,4 +1,4 @@
-import {drawSomeText, isDebug} from './utils';
+import {clearScreen, drawSomeText, isDebug} from './utils';
 
 export class Intro {
   private gameStartCallback: () => void;
@@ -15,7 +15,7 @@ export class Intro {
   }
 
   async startGame(): Promise<void> {
-    globalThis.display.clear();
+    clearScreen();
     if (!isDebug()) {
       await document.querySelector('body')?.requestFullscreen();
     }

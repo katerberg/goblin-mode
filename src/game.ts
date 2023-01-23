@@ -6,22 +6,20 @@ import {Enemy} from './actors/enemy';
 import {Pause} from './actors/pause';
 import {Peasant} from './actors/peasant';
 import {Sheep} from './actors/sheep';
-import {colors, symbols, times} from './constants';
+import {colors, Status, symbols, times} from './constants';
 import {Controls} from './controls';
 import {Actor} from './definitions/actor';
 import {Position} from './definitions/position';
 import {GameMap} from './gameMap';
 import {isInFire} from './mapUtils';
-import {filterInPlace, waitFor} from './utils';
+import {clearScreen, filterInPlace, isDebug, waitFor} from './utils';
 
 export class Game {
+  private level: number;
+
   private scheduler: Speed;
 
-  private sheepQueued: Sheep[];
-
-  private sheepActive: Sheep[];
-
-  private sheepArrived: Sheep[];
+  sheep: Sheep[];
 
   private enemies: Enemy[];
 
@@ -35,32 +33,35 @@ export class Game {
 
   constructor(width: number, height: number) {
     new Controls(this);
+    this.level = 0;
     this.map = new GameMap(width, height);
     this.visibleTiles = {};
-    const startGate = this.map.getStartGate();
 
-    this.flag = {x: startGate.x, y: startGate.y};
+    this.flag = {x: 0, y: 0};
 
-    this.sheepQueued = [];
-
-    Array.from(Array(20).keys()).forEach(() => {
-      this.sheepQueued.push(new Sheep(startGate.x, startGate.y, this, this.map));
+    this.sheep = [];
+    Array.from(Array(21).keys()).forEach(() => {
+      this.sheep.push(new Sheep(0, 0, this, this.map));
     });
-    this.sheepActive = [new Sheep(startGate.x, startGate.y, this, this.map)];
-    this.sheepArrived = [];
     this.scheduler = new Scheduler.Speed();
-    this.sheepActive.forEach((sheep) => this.scheduler.add(sheep, true));
     this.enemies = [];
-    this.enemies.push(this.spawnPeasant());
-    this.enemies.forEach((enemy) => this.scheduler.add(enemy, true));
     this.demon = new Demon();
-    this.scheduler.add(this.demon, true, 1);
-
-    this.init();
   }
 
-  public get sheep(): Sheep[] {
-    return [...this.sheepActive, ...this.sheepQueued, ...this.sheepArrived];
+  get sheepAlive(): Sheep[] {
+    return this.sheep.filter((sheep) => sheep.status !== Status.DEAD);
+  }
+
+  get sheepActive(): Sheep[] {
+    return this.sheep.filter((sheep) => sheep.status === Status.ACTIVE);
+  }
+
+  get sheepQueued(): Sheep[] {
+    return this.sheep.filter((sheep) => sheep.status === Status.QUEUED);
+  }
+
+  get sheepArrived(): Sheep[] {
+    return this.sheep.filter((sheep) => sheep.status === Status.SAFE);
   }
 
   isTileFreeOfSheep(x: number, y: number): boolean {
@@ -74,12 +75,7 @@ export class Game {
   }
 
   handleSheepAtGate(sheepAtGate: Sheep): void {
-    this.redrawTile(sheepAtGate.x, sheepAtGate.y);
-    this.sheepArrived.push(sheepAtGate);
-    filterInPlace(this.sheepActive, (sheep) => sheepAtGate !== sheep);
-    this.scheduler.remove(sheepAtGate);
-    this.redrawTile(sheepAtGate.x, sheepAtGate.y);
-    this.redrawTile(this.map.getEndGate().x, this.map.getEndGate().y);
+    sheepAtGate.status = Status.SAFE;
     if (this.sheepActive.length === 0) {
       this.handleLevelEnd();
     }
@@ -189,7 +185,7 @@ export class Game {
     this.redrawTile(this.flag.x, this.flag.y);
     this.redrawTile(this.map.getStartGate().x, this.map.getStartGate().y);
     const endGate = this.map.getEndGate();
-    if (this.map.isSeenTile(endGate.x, endGate.y)) {
+    if (this.map.isSeenTile(endGate.x, endGate.y) || isDebug()) {
       this.redrawTile(endGate.x, endGate.y);
     }
     this.map.drawDemonFire(this.demon.burningSpaces);
@@ -197,7 +193,9 @@ export class Game {
 
   killCharacter(character: Character): void {
     this.scheduler.remove(character);
-    filterInPlace(this.sheepActive, (sheep) => character !== sheep);
+    if (character instanceof Sheep) {
+      character.status = Status.DEAD;
+    }
     filterInPlace(this.enemies, (enemy) => character !== enemy);
     this.redrawTile(character.x, character.y);
   }
@@ -212,24 +210,38 @@ export class Game {
     const goalz = (sheep: Sheep): void => {
       sheep.setGoal(x, y);
     };
-    this.sheepQueued.forEach(goalz);
-    this.sheepActive.forEach(goalz);
+    this.sheep.forEach(goalz);
   }
 
   private handleLevelEnd(): void {
     if (this.sheepArrived.length !== 0) {
       this.scheduler.clear();
-      // eslint-disable-next-line no-console
-      console.debug('you win');
     }
   }
 
   private spawnSheep(): void {
-    const sheep = this.sheepQueued.pop();
-    if (sheep) {
-      this.sheepActive.push(sheep);
+    if (this.sheepQueued.length) {
+      const [sheep] = this.sheepQueued;
+      const startGate = this.map.getStartGate();
+      sheep.x = startGate.x;
+      sheep.y = startGate.y;
+      sheep.status = Status.ACTIVE;
       this.scheduler.add(sheep, true);
     }
+  }
+
+  private populateEnemies(): void {
+    this.enemies.length = 0;
+    this.enemies.push(this.spawnPeasant());
+    this.enemies.forEach((enemy) => this.scheduler.add(enemy, true));
+    this.demon = new Demon();
+    this.scheduler.add(this.demon, true, 1);
+  }
+
+  private positionFlag(): void {
+    const startGate = this.map.getStartGate();
+
+    this.setFlag(startGate.x, startGate.y);
   }
 
   async nextTurn(): Promise<boolean> {
@@ -237,6 +249,7 @@ export class Game {
     if (!actor) {
       return false;
     }
+
     const startGate = this.map.getStartGate();
     if (this.sheepQueued.length !== 0 && this.isTileFreeOfSheep(startGate.x, startGate.y)) {
       this.spawnSheep();
@@ -245,15 +258,44 @@ export class Game {
       if (actor === this.sheepActive[0]) {
         await waitFor(times.TURN_DELAY);
       }
-      filterInPlace(this.sheepActive, (sheep) => !isInFire(sheep.y, this.demon));
+      this.sheep
+        .filter((sheep) => isInFire(sheep.y, this.demon) && sheep.status !== Status.SAFE)
+        .forEach((s) => this.killCharacter(s));
     }
     await actor.act();
     return true;
   }
 
-  async init(): Promise<void> {
-    this.sheepActive.forEach((sheep) => sheep.act());
-    this.map.drawTiles();
+  public isLost(): boolean {
+    return this.sheep.every((s) => s.status === Status.DEAD);
+  }
+
+  public isWon(): boolean {
+    return this.level > 10;
+  }
+
+  private resetAllSheep(): void {
+    this.sheep.forEach((s) => {
+      if (s.status === Status.SAFE || s.status === Status.QUEUED) {
+        s.status = Status.QUEUED;
+        s.x = this.map.getStartGate().x;
+        s.y = this.map.getStartGate().y;
+      }
+    });
+  }
+
+  async startNextLevel(): Promise<void> {
+    this.scheduler.clear();
+    this.level++;
+    // eslint-disable-next-line no-console
+    console.log(`Level: ${this.level}`);
+    this.map.init();
+    this.resetAllSheep();
+
+    this.populateEnemies();
+    this.positionFlag();
+
+    clearScreen();
     // eslint-disable-next-line no-constant-condition
     while (1) {
       // eslint-disable-next-line no-await-in-loop

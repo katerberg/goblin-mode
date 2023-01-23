@@ -23,9 +23,13 @@ window.addEventListener('load', () => {
       };
     }
   }
-  const startGame: () => void = () => {
-    new Game(boardWidth, boardHeight);
-  };
+  async function startGame(): Promise<void> {
+    const game = new Game(boardWidth, boardHeight);
+    while (!game.isLost() && !game.isWon()) {
+      // eslint-disable-next-line no-await-in-loop
+      await game.startNextLevel();
+    }
+  }
 
   new Intro(startGame);
 });

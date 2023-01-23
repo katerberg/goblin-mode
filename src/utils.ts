@@ -17,6 +17,13 @@ export function isDebug(): boolean {
   return debug !== null;
 }
 
+export function clearScreen(): void {
+  const ctx = (globalThis.display.getContainer() as HTMLCanvasElement)?.getContext('2d');
+  if (ctx) {
+    globalThis.display.clear();
+  }
+}
+
 export function drawSomeText(
   text: string,
   x: number | undefined,

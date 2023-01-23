@@ -34,3 +34,10 @@ export const colors = {
   FLAG: '#FA4ED6',
   GATE: 'rebeccapurple',
 };
+
+export enum Status {
+  ACTIVE,
+  DEAD,
+  QUEUED,
+  SAFE,
+}

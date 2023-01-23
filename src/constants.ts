@@ -14,6 +14,7 @@ export const board = {
 };
 
 export const topOffset = 3;
+export const maxLevel = 10;
 
 export const times = {
   TURN_DELAY: 200,

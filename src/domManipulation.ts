@@ -40,3 +40,12 @@ export function toggleCharacterListVisibility(characterList: Sheep[]): void {
   }
   modalElement.style.display = isOpen ? 'none' : 'block';
 }
+
+export function setLevel(level: number): void {
+  const levelElement = document.getElementById('level-title');
+  if (!levelElement) {
+    return;
+  }
+
+  levelElement.innerHTML = `Level ${level}`;
+}

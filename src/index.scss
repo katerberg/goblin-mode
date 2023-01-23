@@ -1,6 +1,7 @@
 #game {
   max-width: 500px;
 }
+
 button {
   width: 36px;
   height: 36px;
@@ -14,6 +15,15 @@ button {
   &.open {
     display: inline-block;
   }
+}
+
+#level-title {
+  position: absolute;
+  left: 40px;
+  top: 10px;
+  font-size: 18px;
+  color: white;
+  z-index: 50;
 }
 
 #character-list-modal {

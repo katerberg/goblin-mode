@@ -6,10 +6,11 @@ import {Enemy} from './actors/enemy';
 import {Pause} from './actors/pause';
 import {Peasant} from './actors/peasant';
 import {Sheep} from './actors/sheep';
-import {colors, Status, symbols, times} from './constants';
+import {colors, maxLevel, Status, symbols, times} from './constants';
 import {Controls} from './controls';
 import {Actor} from './definitions/actor';
 import {Position} from './definitions/position';
+import {setLevel} from './domManipulation';
 import {GameMap} from './gameMap';
 import {isInFire} from './mapUtils';
 import {clearScreen, filterInPlace, isDebug, waitFor} from './utils';
@@ -271,7 +272,7 @@ export class Game {
   }
 
   public isWon(): boolean {
-    return this.level > 10;
+    return this.level > maxLevel;
   }
 
   private resetAllSheep(): void {
@@ -286,15 +287,14 @@ export class Game {
 
   async startNextLevel(): Promise<void> {
     this.scheduler.clear();
-    this.level++;
-    // eslint-disable-next-line no-console
-    console.log(`Level: ${this.level}`);
+
+    setLevel(++this.level);
+
     this.map.init();
     this.resetAllSheep();
 
     this.populateEnemies();
     this.positionFlag();
-
     clearScreen();
     // eslint-disable-next-line no-constant-condition
     while (1) {

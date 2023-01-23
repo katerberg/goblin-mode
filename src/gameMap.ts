@@ -2,7 +2,7 @@ import {Map} from 'rot-js';
 import {colors, topOffset} from './constants';
 import {Position} from './definitions/position';
 import {Tile} from './tile';
-import {clearScreen, getRandomNumber} from './utils';
+import {getRandomNumber} from './utils';
 
 export class GameMap {
   private startGatePosition: Position;

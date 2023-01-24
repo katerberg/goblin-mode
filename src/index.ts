@@ -2,7 +2,7 @@ import './index.scss';
 import * as ROT from 'rot-js';
 import {board} from './constants';
 import {Game} from './game';
-import {Intro} from './intro';
+import {SceneManager} from './sceneManager';
 
 const boardWidth = board.width;
 const boardHeight = board.height;
@@ -33,7 +33,7 @@ window.addEventListener('load', () => {
     return game.isWon() && !game.isLost();
   }
 
-  new Intro(startGame);
+  new SceneManager(startGame);
 });
 
 globalThis.goblinNames = [

@@ -23,12 +23,14 @@ window.addEventListener('load', () => {
       };
     }
   }
-  async function startGame(): Promise<void> {
+  async function startGame(): Promise<boolean> {
     const game = new Game(boardWidth, boardHeight);
     while (!game.isLost() && !game.isWon()) {
       // eslint-disable-next-line no-await-in-loop
       await game.startNextLevel();
     }
+    globalThis.display._tick();
+    return game.isWon() && !game.isLost();
   }
 
   new Intro(startGame);

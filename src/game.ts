@@ -13,7 +13,7 @@ import {Position} from './definitions/position';
 import {setLevel} from './domManipulation';
 import {GameMap} from './gameMap';
 import {isInFire} from './mapUtils';
-import {clearScreen, filterInPlace, isDebug, waitFor} from './utils';
+import {clearRotScreen, filterInPlace, isDebug, waitFor} from './utils';
 
 export class Game {
   private level: number;
@@ -272,7 +272,7 @@ export class Game {
   }
 
   public isWon(): boolean {
-    return this.level > maxLevel;
+    return this.level >= maxLevel;
   }
 
   private resetAllSheep(): void {
@@ -295,7 +295,7 @@ export class Game {
 
     this.populateEnemies();
     this.positionFlag();
-    clearScreen();
+    clearRotScreen();
     // eslint-disable-next-line no-constant-condition
     while (1) {
       // eslint-disable-next-line no-await-in-loop

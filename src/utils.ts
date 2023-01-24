@@ -17,10 +17,20 @@ export function isDebug(): boolean {
   return debug !== null;
 }
 
-export function clearScreen(): void {
+export function clearRotScreen(): void {
   const ctx = (globalThis.display.getContainer() as HTMLCanvasElement)?.getContext('2d');
   if (ctx) {
     globalThis.display.clear();
+  }
+}
+
+export function clearCanvas(): void {
+  const ctx = (globalThis.display.getContainer() as HTMLCanvasElement)?.getContext('2d');
+  if (ctx) {
+    const prevFill = ctx.fillStyle;
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.fillStyle = prevFill;
   }
 }
 

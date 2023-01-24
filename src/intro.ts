@@ -1,24 +1,41 @@
-import {clearScreen, drawSomeText, isDebug} from './utils';
+import {clearCanvas, drawSomeText, isDebug} from './utils';
 
 export class Intro {
-  private gameStartCallback: () => void;
+  private gameStartCallback: () => Promise<boolean>;
 
-  constructor(gameStartCallback: () => void) {
+  constructor(gameStartCallback: () => Promise<boolean>) {
     this.gameStartCallback = gameStartCallback;
 
-    drawSomeText('Goblin Mode', undefined, undefined, {textAlign: 'center', color: 'orange'});
     if (isDebug()) {
       this.startGame();
     } else {
-      globalThis.gameElement.ontouchstart = this.startGame.bind(this);
+      this.init();
     }
   }
 
+  init(): void {
+    const levelView = document.getElementById('level-title');
+    if (levelView) {
+      levelView.classList.remove('open');
+    }
+    clearCanvas();
+    drawSomeText('Goblin Mode', undefined, undefined, {textAlign: 'center', color: 'orange'});
+    globalThis.gameElement.ontouchstart = this.startGame.bind(this);
+  }
+
   async startGame(): Promise<void> {
-    clearScreen();
+    console.log('starting game');
+    const levelView = document.getElementById('level-title');
+    if (levelView) {
+      levelView.classList.add('open');
+    }
+
+    clearCanvas();
     if (!isDebug()) {
       await document.querySelector('body')?.requestFullscreen();
     }
-    this.gameStartCallback();
+    const result = await this.gameStartCallback();
+    console.log('Win result of ', result);
+    this.init();
   }
 }

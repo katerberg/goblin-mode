@@ -18,12 +18,16 @@ button {
 }
 
 #level-title {
+  display: none;
   position: absolute;
   left: 40px;
   top: 10px;
   font-size: 18px;
   color: white;
   z-index: 50;
+  &.open {
+    display: inline-block;
+  }
 }
 
 #character-list-modal {

@@ -111,6 +111,11 @@ export class Sheep extends Character implements SpeedActor, Actor {
     }
   }
 
+  isHidden(): boolean {
+    const startGate = this.map.getStartGate();
+    return isWithin(this.position, {x: startGate.x, y: startGate.y}, 0);
+  }
+
   getSpeed(): number {
     return this.speed;
   }

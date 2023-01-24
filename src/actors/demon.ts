@@ -23,7 +23,8 @@ export class Demon implements SpeedActor, Actor {
     if (!this.hasWarned) {
       await triggerDemonWarning();
       this.hasWarned = true;
+    } else {
+      this.burningSpaces++;
     }
-    this.burningSpaces++;
   }
 }

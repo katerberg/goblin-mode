@@ -58,15 +58,13 @@ button {
 }
 
 #warning-message {
-  // display: none;
-  opacity: 0;
   pointer-events: none;
   padding: 80px 0 30px;
   background: #000;
   z-index: 20;
   font-family: sans-serif;
   position: absolute;
-  bottom: 0;
+  bottom: -220px;
   font-size: 40px;
   width: 100%;
   text-align: center;
@@ -87,31 +85,31 @@ button {
   }
 
   &.fade-in-animation {
-    animation: fadeIn 1s;
-    opacity: 1;
+    animation: slideUp 1s;
+    bottom: 0;
   }
 
   &.fade-out-animation {
-    animation: fadeOut 0.5s;
-    opacity: 0;
+    animation: slideDown 0.5s;
+    bottom: -220px;
   }
 }
 
-@keyframes fadeIn {
+@keyframes slideUp {
   0% {
-    opacity: 0;
+    bottom: -220px;
   }
   100% {
-    opacity: 1;
+    bottom: 0;
   }
 }
 
-@keyframes fadeOut {
+@keyframes slideDown {
   0% {
-    opacity: 1;
+    bottom: 0;
   }
   100% {
-    opacity: 0;
+    bottom: -220px;
   }
 }
 

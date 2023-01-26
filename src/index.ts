@@ -7,6 +7,7 @@ import {SceneManager} from './sceneManager';
 const boardWidth = board.width;
 const boardHeight = board.height;
 
+screen.orientation?.lock?.('portrait');
 globalThis.height = boardHeight + 3;
 
 globalThis.display = new ROT.Display({width: board.width, height: globalThis.height, fg: '#000', spacing: 2});
@@ -23,6 +24,7 @@ window.addEventListener('load', () => {
       };
     }
   }
+
   async function startGame(): Promise<boolean> {
     const game = new Game(boardWidth, boardHeight);
     while (!game.isLost() && !game.isWon()) {

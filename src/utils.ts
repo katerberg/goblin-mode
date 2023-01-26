@@ -40,7 +40,7 @@ type DrawOptions = {
   textAlign?: CanvasTextAlign;
 };
 
-export function drawSomeText(text: string, x: number | undefined, y: number | undefined, options?: DrawOptions): void {
+export function drawSomeText(text: string, x?: number, y?: number, options?: DrawOptions): void {
   const ctx = (globalThis.display.getContainer() as HTMLCanvasElement)?.getContext('2d');
   if (ctx) {
     const prevAlign = ctx.textAlign;

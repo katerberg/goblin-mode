@@ -24,7 +24,7 @@ export class SceneManager {
 
   init(): void {
     this.hideGameElements();
-    drawSomeText('Goblin Mode', undefined, undefined, {textAlign: 'center', color: 'orange'});
+    setTimeout(() => drawSomeText('Goblin Mode', undefined, undefined, {textAlign: 'center', color: 'orange'}), 1);
     globalThis.gameElement.ontouchstart = this.startGame.bind(this);
   }
 
@@ -44,14 +44,14 @@ export class SceneManager {
     if (levelView) {
       levelView.classList.add('open');
     }
-
     clearCanvas();
     if (!isDebug()) {
-      await document.querySelector('body')?.requestFullscreen();
+      if (document.querySelector('body')?.requestFullscreen) {
+        await document.querySelector('body')?.requestFullscreen();
+      }
     }
     const result = await this.gameStartCallback();
     await this.showEndScreen(result);
-
     this.init();
   }
 }

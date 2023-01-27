@@ -288,7 +288,7 @@ export class Game {
     this.scheduler.clear();
 
     setLevel(++this.level);
-    this.demon.addDelay(1);
+    this.demon.nextLevel(1);
 
     this.map.init();
     this.resetAllSheep();

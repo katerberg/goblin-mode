@@ -22,7 +22,9 @@ export class Demon implements SpeedActor, Actor {
     return this.speed;
   }
 
-  addDelay(time: number): void {
+  nextLevel(time: number): void {
+    this.burningSpaces = 0;
+    this.hasWarned = false;
     this.timeToCome += time;
   }
 

@@ -9,7 +9,10 @@ export class Demon implements SpeedActor, Actor {
 
   public burningSpaces;
 
+  private timeToCome;
+
   constructor() {
+    this.timeToCome = 0.2;
     this.burningSpaces = 0;
     this.speed = 10;
     this.hasWarned = false;
@@ -19,7 +22,14 @@ export class Demon implements SpeedActor, Actor {
     return this.speed;
   }
 
-  async act(): Promise<void> {
+  addDelay(time: number): void {
+    this.timeToCome += time;
+  }
+
+  async act(time: number): Promise<void> {
+    if (time < this.timeToCome) {
+      return;
+    }
     if (!this.hasWarned) {
       await triggerDemonWarning();
       this.hasWarned = true;

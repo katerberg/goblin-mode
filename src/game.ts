@@ -235,8 +235,7 @@ export class Game {
     this.enemies.length = 0;
     this.enemies.push(this.spawnPeasant());
     this.enemies.forEach((enemy) => this.scheduler.add(enemy, true));
-    this.demon = new Demon();
-    this.scheduler.add(this.demon, true, 1);
+    this.scheduler.add(this.demon, true);
   }
 
   private positionFlag(): void {
@@ -263,7 +262,7 @@ export class Game {
         .filter((sheep) => isInFire(sheep.y, this.demon) && sheep.status !== Status.SAFE)
         .forEach((s) => this.killCharacter(s));
     }
-    await actor.act();
+    await actor.act(this.scheduler.getTime());
     return true;
   }
 
@@ -289,6 +288,7 @@ export class Game {
     this.scheduler.clear();
 
     setLevel(++this.level);
+    this.demon.addDelay(1);
 
     this.map.init();
     this.resetAllSheep();

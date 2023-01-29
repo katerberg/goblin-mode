@@ -20,6 +20,8 @@ export class Sheep extends Character implements SpeedActor, Actor {
 
   private xp: number;
 
+  public level: number;
+
   color: string;
 
   status: Status;
@@ -28,6 +30,7 @@ export class Sheep extends Character implements SpeedActor, Actor {
     super({x, y}, game);
     this.status = Status.QUEUED;
     this.xp = 0;
+    this.level = 1;
     this.name = getGoblinName();
     this.color = getRandomGreen();
     this.baseVisibility = 8;
@@ -37,21 +40,6 @@ export class Sheep extends Character implements SpeedActor, Actor {
 
   setGoal(x: number, y: number): void {
     this.goal = `${x},${y}`;
-  }
-
-  // 1: 0
-  // 2: 1
-  // 3: 3
-  // 4: 6
-  // 5: 10
-  // 6: 15
-  public get level(): number {
-    let level = 1;
-    let {xp} = this;
-    while (xp > 0) {
-      xp -= level++;
-    }
-    return level;
   }
 
   public get position(): Position {
@@ -78,8 +66,19 @@ export class Sheep extends Character implements SpeedActor, Actor {
     return closestEnemy;
   }
 
+  // (level/0.3)^2
   private gainXp(xp: number): void {
     this.xp += xp;
+    const newLevel = Math.ceil(Math.sqrt(xp) * 0.3);
+    if (newLevel !== this.level) {
+      this.levelUp(newLevel);
+    }
+  }
+
+  private levelUp(level: number): void {
+    this.baseHp = level * level;
+    this.sufferedDamage = 0;
+    this.level = level;
   }
 
   public async act(): Promise<void> {
@@ -87,7 +86,7 @@ export class Sheep extends Character implements SpeedActor, Actor {
     if (enemy) {
       if (isWithin(this.position, enemy, this.range)) {
         enemy.takeDamage(this.attack);
-        this.gainXp(this.attack);
+        this.gainXp(this.attack * 20);
         return;
       }
     }

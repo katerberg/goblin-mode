@@ -15,7 +15,7 @@ export abstract class Character {
 
   protected baseHp: number;
 
-  private sufferedDamage: number;
+  protected sufferedDamage: number;
 
   goal: `${number},${number}`;
 

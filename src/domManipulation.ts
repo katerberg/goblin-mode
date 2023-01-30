@@ -32,7 +32,13 @@ export function toggleCharacterListVisibility(characterList: Sheep[]): void {
       const list = characterList
         .map(
           (sheep) =>
-            `<div class="sheep"><img class="sheep-head" src="./images/gooblin-head.svg" /><span>${sheep.name} - Level ${sheep.level}</span></div>`,
+            `<div class="sheep"><img class="sheep-head" src="./images/gooblin-head.svg" /><span class="details"><span class="description"><span class="name">${
+              sheep.name
+            } </span><span class="level">- ${
+              sheep.level
+            } </span></span><div class="health-bar"><span class="current-health" style="width: ${
+              (100 * sheep.hp) / sheep.baseHp
+            }%"/></div></span></div>`,
         )
         .reduce((prev, current) => prev + current, '');
       characterListElement.innerHTML = list;

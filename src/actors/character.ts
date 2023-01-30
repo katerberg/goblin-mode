@@ -13,7 +13,7 @@ export abstract class Character {
 
   private baseArmor: number;
 
-  protected baseHp: number;
+  public baseHp: number;
 
   protected sufferedDamage: number;
 

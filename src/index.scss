@@ -2,17 +2,14 @@
   max-width: 500px;
 }
 
-button {
-  width: 36px;
-  height: 36px;
-}
-
 #character-list-button {
   display: none;
+  width: 36px;
+  height: 36px;
   position: absolute;
   top: 0;
   left: 0;
-  &.open {
+  &.visible {
     display: inline-block;
   }
 }
@@ -48,13 +45,17 @@ button {
 
   button.cancel {
     position: absolute;
-    right: 36px;
+    width: 36px;
+    height: 36px;
+    right: 10px;
   }
 
   #character-list {
     overflow-y: auto;
+    height: 100%;
 
     .sheep {
+      height: 24px;
       display: flex;
       img.sheep-head {
         max-width: 10%;
@@ -64,19 +65,34 @@ button {
       .details {
         margin-left: 10px;
         flex-grow: 9;
+        display: flex;
         > span {
           display: inline-block;
         }
+
         .description {
+          height: 100%;
           width: 60%;
+          display: flex;
+          align-items: center;
         }
+
+        .perk-buttons {
+          width: 40%;
+          display: flex;
+          align-items: center;
+          .perk-button {
+            width: 50%;
+          }
+        }
+
         .health-bar {
           width: 40%;
           display: inline-block;
-          height: 20px;
+          height: calc(100% - 2px);
           background: red;
           .current-health {
-            height: 20px;
+            height: 100%;
             display: inline-block;
             background: green;
           }

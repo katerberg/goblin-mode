@@ -21,7 +21,7 @@ export class Controls {
     globalThis.gameElement.ontouchend = this.handleTouchEnd.bind(this);
     const characterListButton = document.getElementById('character-list-button');
     if (characterListButton) {
-      characterListButton.classList.add('open');
+      characterListButton.classList.add('visible');
       characterListButton.ontouchstart = this.handleCharacterListOpen.bind(this);
     }
     const characterListCancel = document.getElementById('character-list-cancel-button');

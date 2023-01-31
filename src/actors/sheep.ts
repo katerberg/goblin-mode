@@ -39,6 +39,8 @@ export class Sheep extends Character implements SpeedActor, Actor {
 
   public level: number;
 
+  public receivedPerks: number;
+
   perkQueue: [Perk, number][];
 
   perks: Perks;
@@ -51,6 +53,7 @@ export class Sheep extends Character implements SpeedActor, Actor {
     super({x, y}, game);
     this.status = Status.QUEUED;
     this.xp = 0;
+    this.receivedPerks = 1;
     this.level = 1;
     this.name = getGoblinName();
     this.color = getRandomGreen();
@@ -122,7 +125,14 @@ export class Sheep extends Character implements SpeedActor, Actor {
   }
 
   public perkUp(upgrade: Perk, value: number): void {
-    this.perks[upgrade] += value;
+    if (this.needsPerk()) {
+      this.receivedPerks++;
+      this.perks[upgrade] += value;
+    }
+  }
+
+  public needsPerk(): boolean {
+    return this.receivedPerks < this.level;
   }
 
   public async act(): Promise<void> {
@@ -130,7 +140,7 @@ export class Sheep extends Character implements SpeedActor, Actor {
     if (enemy) {
       if (isWithin(this.position, enemy, this.range)) {
         enemy.takeDamage(this.attack);
-        this.gainXp(this.attack * 20);
+        this.gainXp(this.attack * 15);
         return;
       }
     }

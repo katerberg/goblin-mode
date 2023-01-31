@@ -19,6 +19,23 @@ export class SceneManager {
     if (levelView) {
       levelView.classList.remove('open');
     }
+    const characterButton = document.getElementById('character-list-button');
+    if (characterButton) {
+      characterButton.classList.remove('visible');
+    }
+    clearCanvas();
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private showGameElements(): void {
+    const levelView = document.getElementById('level-title');
+    if (levelView) {
+      levelView.classList.add('open');
+    }
+    const characterButton = document.getElementById('character-list-button');
+    if (characterButton) {
+      characterButton.classList.add('visible');
+    }
     clearCanvas();
   }
 
@@ -40,11 +57,7 @@ export class SceneManager {
   }
 
   async startGame(): Promise<void> {
-    const levelView = document.getElementById('level-title');
-    if (levelView) {
-      levelView.classList.add('open');
-    }
-    clearCanvas();
+    this.showGameElements();
     if (!isDebug()) {
       if (document.querySelector('body')?.requestFullscreen) {
         await document.querySelector('body')?.requestFullscreen();

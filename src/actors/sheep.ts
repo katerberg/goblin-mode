@@ -6,7 +6,7 @@ import {Position} from '../definitions/position';
 import {Game} from '../game';
 import {GameMap} from '../gameMap';
 import {isWithin} from '../mapUtils';
-import {getGoblinName, getRandomGreen} from '../utils';
+import {filterInPlace, getGoblinName, getRandomGreen} from '../utils';
 import {Character} from './character';
 import {Enemy} from './enemy';
 
@@ -128,6 +128,14 @@ export class Sheep extends Character implements SpeedActor, Actor {
     if (this.needsPerk()) {
       this.receivedPerks++;
       this.perks[upgrade] += value;
+      let removedPerk = false;
+      filterInPlace(this.perkQueue, ([perk, perkValue]) => {
+        if (!removedPerk && perk === upgrade && perkValue === value) {
+          removedPerk = true;
+          return false;
+        }
+        return true;
+      });
     }
   }
 

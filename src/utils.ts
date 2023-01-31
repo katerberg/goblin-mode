@@ -1,8 +1,8 @@
-export function filterInPlace<Type>(array: Array<Type>, fn: (arg0: Type) => boolean): void {
+export function filterInPlace<Type>(array: Array<Type>, fn: (arg0: Type, i: number) => boolean): void {
   let from = 0,
     to = 0;
   while (from < array.length) {
-    if (fn(array[from])) {
+    if (fn(array[from], from)) {
       array[to] = array[from];
       to++;
     }

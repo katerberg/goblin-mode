@@ -61,7 +61,12 @@ export class Sheep extends Character implements SpeedActor, Actor {
     this.baseSpeed = 100;
     this.map = map;
     this.perks = getEmptyPerks();
-    this.perkQueue = Array.from(Array(30)).map(() => getRandomPerk());
+    this.perkQueue = Array.from(Array(50)).map(() => getRandomPerk());
+    for (let i = this.perkQueue.length - 1; i > 0; i--) {
+      if (i <= this.perkQueue.length && this.perkQueue[i][0] === this.perkQueue[i - 1][0]) {
+        this.perkQueue.splice(i, 1);
+      }
+    }
   }
 
   public get range(): number {
@@ -128,10 +133,8 @@ export class Sheep extends Character implements SpeedActor, Actor {
     if (this.needsPerk()) {
       this.receivedPerks++;
       this.perks[upgrade] += value;
-      let removedPerk = false;
-      filterInPlace(this.perkQueue, ([perk, perkValue]) => {
-        if (!removedPerk && perk === upgrade && perkValue === value) {
-          removedPerk = true;
+      filterInPlace(this.perkQueue, (_value, i) => {
+        if (i < 2) {
           return false;
         }
         return true;

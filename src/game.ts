@@ -233,7 +233,9 @@ export class Game {
 
   private populateEnemies(): void {
     this.enemies.length = 0;
-    this.enemies.push(this.spawnPeasant());
+    for (let i = 0; i < this.level; i++) {
+      this.enemies.push(this.spawnPeasant());
+    }
     this.enemies.forEach((enemy) => this.scheduler.add(enemy, true));
     this.scheduler.add(this.demon, true);
   }

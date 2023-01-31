@@ -7,11 +7,11 @@ export abstract class Character {
 
   public y: number;
 
-  private baseRange: number;
+  protected baseRange: number;
 
-  private baseAttack: number;
+  protected baseAttack: number;
 
-  private baseArmor: number;
+  protected baseArmor: number;
 
   public baseHp: number;
 

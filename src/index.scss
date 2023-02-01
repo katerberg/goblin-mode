@@ -183,6 +183,7 @@ body {
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none;
   background: black;
+  touch-action: manipulation;
 }
 
 canvas {

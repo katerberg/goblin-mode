@@ -2,9 +2,12 @@ import {Position} from '../definitions/position';
 import {Game} from '../game';
 import {Enemy} from './enemy';
 
-export class Peasant extends Enemy {
+export class Guard extends Enemy {
   constructor(position: Position, game: Game) {
     super(position, game);
-    this.baseHp = 7;
+    this.baseHp = 20;
+    this.baseRange = 1;
+    this.baseAttack = 2;
+    this.baseVisibility = 4;
   }
 }

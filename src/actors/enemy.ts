@@ -7,9 +7,9 @@ import {Character} from './character';
 import {Sheep} from './sheep';
 
 export abstract class Enemy extends Character implements SpeedActor, Actor {
-  private speed: number;
+  protected speed: number;
 
-  private baseVisibility: number;
+  protected baseVisibility: number;
 
   private initialPosition: `${number},${number}`;
 

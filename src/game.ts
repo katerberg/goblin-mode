@@ -1,14 +1,16 @@
 import {FOV, Scheduler} from 'rot-js';
 import Speed from 'rot-js/lib/scheduler/speed';
+import {Archer} from './actors/archer';
 import {Character} from './actors/character';
 import {Demon} from './actors/demon';
 import {Enemy} from './actors/enemy';
+import {Guard} from './actors/guard';
 import {Pause} from './actors/pause';
 import {Peasant} from './actors/peasant';
 import {Sheep} from './actors/sheep';
 import {colors, maxLevel, Status, symbols, times} from './constants';
 import {Controls} from './controls';
-import {Actor} from './definitions/actor';
+import {Actor, EnemyInitializer} from './definitions/actor';
 import {Position} from './definitions/position';
 import {setLevel} from './domManipulation';
 import {GameMap} from './gameMap';
@@ -149,14 +151,14 @@ export class Game {
     return colors.BACKGROUND_NONVISIBLE_IMPASSABLE;
   }
 
-  private spawnPeasant(): Peasant {
+  private spawnEnemy<T extends EnemyInitializer>(ClassName: T): Enemy {
     for (let i = 0; i <= 1000; i++) {
       const tile = this.map.getRandomPassableTile();
       if (
         !this.sheepActive.some((sheep) => sheep.isOccupying({x: tile.x, y: tile.y})) &&
         !this.enemies.some((enemy) => enemy.isOccupying({x: tile.x, y: tile.y}))
       ) {
-        return new Peasant({x: tile.x, y: tile.y}, this);
+        return new ClassName({x: tile.x, y: tile.y}, this);
       }
     }
     throw new Error('no valid location');
@@ -237,7 +239,13 @@ export class Game {
   private populateEnemies(): void {
     this.enemies.length = 0;
     for (let i = 0; i < this.level; i++) {
-      this.enemies.push(this.spawnPeasant());
+      this.enemies.push(this.spawnEnemy(Peasant));
+    }
+    for (let i = 2; i < this.level; i++) {
+      this.enemies.push(this.spawnEnemy(Archer));
+    }
+    for (let i = 4; i < this.level; i++) {
+      this.enemies.push(this.spawnEnemy(Guard));
     }
     this.enemies.forEach((enemy) => this.scheduler.add(enemy, true));
     this.scheduler.add(this.demon, true);

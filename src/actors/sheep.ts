@@ -123,7 +123,7 @@ export class Sheep extends Character implements SpeedActor, Actor {
   }
 
   private levelUp(level: number): void {
-    this.baseHp = level * level;
+    this.baseHp = level * 2;
     this.sufferedDamage = 0;
     this.level = level;
   }

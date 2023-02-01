@@ -7,7 +7,7 @@ export class Guard extends Enemy {
     super(position, game);
     this.baseHp = 20;
     this.baseRange = 1;
-    this.baseAttack = 2;
+    this.baseAttack = 4;
     this.baseVisibility = 4;
   }
 }

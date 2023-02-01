@@ -1,4 +1,4 @@
-import {FOV, Scheduler} from 'rot-js';
+import {Color, FOV, Scheduler} from 'rot-js';
 import Speed from 'rot-js/lib/scheduler/speed';
 import {Archer} from './actors/archer';
 import {Character} from './actors/character';
@@ -117,9 +117,22 @@ export class Game {
   redrawTile(x: number, y: number): void {
     let symbol = symbols.SPACE_OPEN;
     let fgColor = '#000';
+    let bgColor = this.getTileBackgroundColor(x, y);
     if (this.sheepActive.some((sheep) => sheep.isOccupying({x, y}))) {
       symbol = symbols.SHEEP;
-      fgColor = this.getSheepAt({x, y})?.color || '#000';
+      const sheep = this.getSheepAt({x, y});
+      fgColor = sheep?.color || '#000';
+      if (sheep?.needsPerk?.()) {
+        bgColor = 'gold';
+      } else if (sheep) {
+        bgColor = Color.toHex(
+          Color.interpolate(
+            Color.fromString(colors.HURT),
+            Color.fromString(bgColor),
+            1 - (1 - sheep.percentageHealth()) / 2,
+          ),
+        );
+      }
     } else if (this.enemies.some((enemy) => enemy.isOccupying({x, y}))) {
       const enemy = this.enemies.find((e) => e.isOccupying({x, y}));
       if (enemy instanceof Peasant) {
@@ -135,7 +148,7 @@ export class Game {
       symbol = symbols.GATE;
     }
 
-    globalThis.display.draw(x, y, symbol, fgColor, this.getTileBackgroundColor(x, y));
+    globalThis.display.draw(x, y, symbol, fgColor, bgColor);
   }
 
   private getTileBackgroundColor(x: number, y: number): string {

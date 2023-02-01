@@ -57,6 +57,10 @@ export abstract class Character {
     this.game.killCharacter(this);
   }
 
+  public percentageHealth(): number {
+    return this.hp / this.baseHp;
+  }
+
   public takeDamage(amount: number): void {
     this.sufferedDamage += amount;
     if (this.hp <= 0) {

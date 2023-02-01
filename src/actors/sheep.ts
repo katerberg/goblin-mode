@@ -1,5 +1,5 @@
 import {SpeedActor} from 'rot-js';
-import {levelLimits, Status, symbols} from '../constants';
+import {levelLimits, Status} from '../constants';
 import {Actor} from '../definitions/actor';
 import {Perk, Perks} from '../definitions/perks';
 import {Position} from '../definitions/position';
@@ -123,7 +123,7 @@ export class Sheep extends Character implements SpeedActor, Actor {
   }
 
   private levelUp(level: number): void {
-    this.baseHp = level * 2;
+    this.baseHp = level;
     this.sufferedDamage = 0;
     this.level = level;
   }
@@ -185,9 +185,5 @@ export class Sheep extends Character implements SpeedActor, Actor {
 
   getSpeed(): number {
     return this.baseSpeed + this.perks[Perk.SPEED];
-  }
-
-  draw(bgColor: string): void {
-    globalThis.display.draw(this.x, this.y, symbols.SHEEP, this.color, bgColor);
   }
 }

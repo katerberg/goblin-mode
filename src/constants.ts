@@ -25,7 +25,7 @@ export const times = {
 };
 
 export const colors = {
-  BACKGROUND_GATE: 'orange',
+  BACKGROUND_GATE: '#FF9900',
   BACKGROUND_VISIBLE_PASSABLE: '#dfdfdf',
   BACKGROUND_VISIBLE_IMPASSABLE: '#4D4D4D',
   BACKGROUND_NONVISIBLE_PASSABLE: '#8C8C8C',
@@ -37,7 +37,8 @@ export const colors = {
   DEMON_FIRE_4: '#ffae34',
   DEMON_FIRE_5: '#feec85',
   FLAG: '#FA4ED6',
-  GATE: 'rebeccapurple',
+  HURT: '#FF0000',
+  GATE: '#663399',
 };
 
 export enum Status {

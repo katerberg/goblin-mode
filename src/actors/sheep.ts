@@ -59,6 +59,7 @@ export class Sheep extends Character implements SpeedActor, Actor {
     this.color = getRandomGreen();
     this.baseVisibility = 8;
     this.baseSpeed = 100;
+    this.baseHp = 2;
     this.map = map;
     this.perks = getEmptyPerks();
     this.perkQueue = Array.from(Array(50)).map(() => getRandomPerk());

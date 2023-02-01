@@ -26,7 +26,7 @@ export abstract class Character {
     this.baseRange = 1;
     this.baseHp = 1;
     this.baseAttack = 1;
-    this.baseArmor = 1;
+    this.baseArmor = 0;
     this.sufferedDamage = 0;
     this.x = position.x;
     this.y = position.y;
@@ -62,7 +62,16 @@ export abstract class Character {
   }
 
   public takeDamage(amount: number): void {
-    this.sufferedDamage += amount;
+    let takenDamage: number = amount;
+    const reducedDamage = amount - this.armor;
+    if (reducedDamage > 0) {
+      takenDamage = reducedDamage;
+    } else if (amount === 1 && this.armor) {
+      takenDamage = 0;
+    } else if (reducedDamage <= 0) {
+      takenDamage = 0.3;
+    }
+    this.sufferedDamage += takenDamage;
     if (this.hp <= 0) {
       this.die();
     }

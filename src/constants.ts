@@ -1,5 +1,5 @@
 export const symbols = {
-  ENEMY: '⚔',
+  ENEMY: '?',
   PEASANT: 'ψ',
   GUARD: '⚔',
   JUDGE: '⚖',
@@ -17,7 +17,7 @@ export const board = {
 };
 
 export const topOffset = 3;
-export const maxLevel = 5;
+export const maxLevel = 6;
 
 export const times = {
   TURN_DELAY: 200,

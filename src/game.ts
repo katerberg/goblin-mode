@@ -5,6 +5,7 @@ import {Character} from './actors/character';
 import {Demon} from './actors/demon';
 import {Enemy} from './actors/enemy';
 import {Guard} from './actors/guard';
+import {Judge} from './actors/judge';
 import {Pause} from './actors/pause';
 import {Peasant} from './actors/peasant';
 import {Sheep} from './actors/sheep';
@@ -126,17 +127,19 @@ export class Game {
         bgColor = 'gold';
       } else if (sheep) {
         bgColor = Color.toHex(
-          Color.interpolate(
-            Color.fromString(colors.HURT),
-            Color.fromString(bgColor),
-            1 - (1 - sheep.percentageHealth()) / 2,
-          ),
+          Color.interpolate(Color.fromString(colors.HURT), Color.fromString(bgColor), sheep.percentageHealth()),
         );
       }
     } else if (this.enemies.some((enemy) => enemy.isOccupying({x, y}))) {
       const enemy = this.enemies.find((e) => e.isOccupying({x, y}));
       if (enemy instanceof Peasant) {
         symbol = symbols.PEASANT;
+      } else if (enemy instanceof Guard) {
+        symbol = symbols.GUARD;
+      } else if (enemy instanceof Archer) {
+        symbol = symbols.ARCHER;
+      } else if (enemy instanceof Judge) {
+        symbol = symbols.JUDGE;
       } else {
         symbol = symbols.ENEMY;
       }
@@ -259,6 +262,9 @@ export class Game {
     }
     for (let i = 4; i < this.level; i++) {
       this.enemies.push(this.spawnEnemy(Guard));
+    }
+    for (let i = 5; i < this.level; i++) {
+      this.enemies.push(this.spawnEnemy(Judge));
     }
     this.enemies.forEach((enemy) => this.scheduler.add(enemy, true));
     this.scheduler.add(this.demon, true);

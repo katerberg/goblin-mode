@@ -1,3 +1,3 @@
 export interface Actor {
-  act: (time: number) => Promise<void>;
+  act: (time: number) => Promise<boolean>;
 }

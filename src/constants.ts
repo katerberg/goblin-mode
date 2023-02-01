@@ -1,6 +1,9 @@
 export const symbols = {
   ENEMY: '⚔',
   PEASANT: 'ψ',
+  GUARD: '⚔',
+  JUDGE: '⚖',
+  ARCHER: '⤑',
   FLAG: '⚑',
   GATE: '∩',
   SHEEP: '웃',
@@ -18,6 +21,7 @@ export const maxLevel = 5;
 
 export const times = {
   TURN_DELAY: 200,
+  TURN_DELAY_TUNNEL: 100,
 };
 
 export const colors = {

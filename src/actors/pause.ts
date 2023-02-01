@@ -21,7 +21,8 @@ export class Pause implements SpeedActor, Actor {
     return this.speed;
   }
 
-  public async act(): Promise<void> {
+  public async act(): Promise<boolean> {
     await this.resolver;
+    return false;
   }
 }

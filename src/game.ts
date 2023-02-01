@@ -26,6 +26,8 @@ export class Game {
 
   private map: GameMap;
 
+  private noActionList: number;
+
   private visibleTiles: {[key: `${number},${number}`]: true};
 
   private flag: Position;
@@ -40,6 +42,7 @@ export class Game {
 
     this.flag = {x: 0, y: 0};
 
+    this.noActionList = 0;
     this.sheep = [];
     Array.from(Array(21).keys()).forEach(() => {
       this.sheep.push(new Sheep(0, 0, this, this.map));
@@ -258,13 +261,17 @@ export class Game {
     }
     if (this.sheepActive.length) {
       if (actor === this.sheepActive[0]) {
-        await waitFor(times.TURN_DELAY);
+        await waitFor(this.noActionList > 5 ? times.TURN_DELAY_TUNNEL : times.TURN_DELAY);
+        this.noActionList = 0;
       }
       this.sheep
         .filter((sheep) => isInFire(sheep.y, this.demon) && sheep.status !== Status.SAFE)
         .forEach((s) => this.killCharacter(s));
     }
-    await actor.act(this.scheduler.getTime());
+    const tookAction = await actor.act(this.scheduler.getTime());
+    if (!tookAction) {
+      this.noActionList++;
+    }
     return true;
   }
 
@@ -289,6 +296,7 @@ export class Game {
   async startNextLevel(): Promise<void> {
     this.scheduler.clear();
 
+    this.noActionList = 0;
     setLevel(++this.level);
     this.demon.nextLevel(1);
 

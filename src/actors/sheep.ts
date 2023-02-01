@@ -145,19 +145,22 @@ export class Sheep extends Character implements SpeedActor, Actor {
     return this.receivedPerks < this.level;
   }
 
-  public async act(): Promise<void> {
+  public async act(): Promise<boolean> {
+    let tookAction = false;
     const enemy = this.getClosestEnemyWithinRange();
     if (enemy) {
       if (isWithin(this.position, enemy, this.range)) {
+        tookAction = true;
         enemy.takeDamage(this.attack);
         this.gainXp(this.attack);
-        return;
+        return tookAction;
       }
     }
 
     const {path} = this;
     const canMove = path[0] && !this.game.isOccupiedTile(path[0][0], path[0][1]);
     if (canMove) {
+      tookAction = true;
       const [[nextX, nextY]] = path;
 
       this.x = nextX;
@@ -172,6 +175,7 @@ export class Sheep extends Character implements SpeedActor, Actor {
         this.game.handleSheepAtGate(this);
       }
     }
+    return tookAction;
   }
 
   isHidden(): boolean {

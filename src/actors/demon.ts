@@ -28,9 +28,9 @@ export class Demon implements SpeedActor, Actor {
     this.timeToCome += time;
   }
 
-  async act(time: number): Promise<void> {
+  async act(time: number): Promise<boolean> {
     if (time < this.timeToCome) {
-      return;
+      return false;
     }
     if (!this.hasWarned) {
       await triggerDemonWarning();
@@ -38,5 +38,6 @@ export class Demon implements SpeedActor, Actor {
     } else {
       this.burningSpaces++;
     }
+    return true;
   }
 }

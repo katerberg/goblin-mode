@@ -52,27 +52,32 @@ export abstract class Enemy extends Character implements SpeedActor, Actor {
     return getPositionFromCoords(this.goal);
   }
 
-  public async act(): Promise<void> {
+  public async act(): Promise<boolean> {
     const sheep = this.getClosestSheepInRange();
     if (sheep) {
       this.goal = `${sheep.position.x},${sheep.position.y}`;
     }
     if (sheep && isWithin(this.position, this.getGoal(), this.range) && !sheep.isHidden()) {
       sheep.takeDamage(this.attack);
+      return true;
     } else if (
       (!isWithin(this.getGoal(), this.position, this.baseVisibility) || isWithin(this.getGoal(), this.position, 0)) &&
       this.goal !== this.initialPosition
     ) {
       this.goal = this.initialPosition;
-    } else {
-      const {path} = this;
-      if (path[0] && !this.game.isOccupiedTile(path[0][0], path[0][1])) {
-        const [[nextX, nextY]] = path;
-
-        this.x = nextX;
-        this.y = nextY;
-      }
-      this.game.drawFov();
+      return false;
     }
+    const {path} = this;
+    if (path[0] && !this.game.isOccupiedTile(path[0][0], path[0][1])) {
+      const [[nextX, nextY]] = path;
+
+      this.x = nextX;
+      this.y = nextY;
+
+      this.game.drawFov();
+      return true;
+    }
+    this.game.drawFov();
+    return false;
   }
 }

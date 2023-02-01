@@ -1,5 +1,5 @@
 import {SpeedActor} from 'rot-js';
-import {Status, symbols} from '../constants';
+import {levelLimits, Status, symbols} from '../constants';
 import {Actor} from '../definitions/actor';
 import {Perk, Perks} from '../definitions/perks';
 import {Position} from '../definitions/position';
@@ -109,17 +109,16 @@ export class Sheep extends Character implements SpeedActor, Actor {
     return closestEnemy;
   }
 
-  // (level/0.3)^2
-  //1: 11
-  //2: 44
-  //3: 100
-  //4: 177
-  //5: 277
   private gainXp(xp: number): void {
     this.xp += xp;
-    const newLevel = Math.ceil(Math.sqrt(xp) * 0.3) + 1;
+    let newLevel = 0;
+    while (this.xp > levelLimits[newLevel]) {
+      newLevel++;
+    }
+
     if (newLevel !== this.level) {
       this.levelUp(newLevel);
+      this.gainXp(0);
     }
   }
 
@@ -151,7 +150,7 @@ export class Sheep extends Character implements SpeedActor, Actor {
     if (enemy) {
       if (isWithin(this.position, enemy, this.range)) {
         enemy.takeDamage(this.attack);
-        this.gainXp(this.attack * 15);
+        this.gainXp(this.attack);
         return;
       }
     }

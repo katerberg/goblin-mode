@@ -14,7 +14,7 @@ export const board = {
 };
 
 export const topOffset = 3;
-export const maxLevel = 10;
+export const maxLevel = 5;
 
 export const times = {
   TURN_DELAY: 200,
@@ -42,3 +42,5 @@ export enum Status {
   QUEUED,
   SAFE,
 }
+
+export const levelLimits = [0, 2, 5, 11, 21, 30, 45, 70, 105];

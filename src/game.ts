@@ -303,8 +303,6 @@ export class Game {
       // eslint-disable-next-line no-await-in-loop
       const good = await this.nextTurn();
       if (!good || (this.sheepActive.length === 0 && this.sheepQueued.length === 0)) {
-        // eslint-disable-next-line no-console
-        console.debug(`breaking due to no ${good ? 'sheep' : 'actors'}`);
         break;
       }
     }

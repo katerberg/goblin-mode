@@ -1,6 +1,6 @@
-# Sheep Herder
+# Goblin Mode
 
-A game where you try to manage your sheep as they wander from path to path.
+A game where you try to manage your goblin horde as they try to escape a demon accidentally released from the depths of their home.
 
 ## Installation
 
